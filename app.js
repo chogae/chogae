@@ -1,1 +1,6 @@
-ECHO°¡ ¼³Á¤µÇ¾î ÀÖ½À´Ï´Ù.
+const supabaseUrl = "https://bsqrjwfnpxeeseatpsum.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcXJqd2ZucHhlZXNlYXRwc3VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2Mzg3MTgsImV4cCI6MjA4MDIxNDcxOH0._N1l9T - lOomJ1 - q10fcs_D3AkkBP4L8px9wjd89MLps";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+//ì„œë¹„ìŠ¤ë¡¤í‚¤
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzcXJqd2ZucHhlZXNlYXRwc3VtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDYzODcxOCwiZXhwIjoyMDgwMjE0NzE4fQ.QJI_05eSR__33EXTtfu7GAtoDYNT5_8uvAT18hNKHtk

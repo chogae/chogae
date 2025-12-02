@@ -1,1 +1,28 @@
-ECHO가 설정되어 있습니다.
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #1F1F1F;
+    margin: 0;
+    padding: 0;
+    color: #D4D4D4;
+    font-size: 14px;
+    /* font-weight: 500; */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+html {
+    overflow-y: scroll;
+    height: 100%;
+    overflow: hidden;
+
+}
+
+div {
+    margin: 3px 6px;
+    padding: 3px 6px;
+}

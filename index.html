@@ -1,1 +1,30 @@
-ECHO�� �����Ǿ� �ֽ��ϴ�.
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>chogae</title>
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div id="게임컨테이너">
+        <div id="상단바">
+            <div class="상단버튼" onclick="메인화면표시()">메인</div>
+            <div class="상단버튼" onclick="던전화면표시()">던전</div>
+            <div class="상단버튼" onclick="가방화면표시()">가방</div>
+        </div>
+
+        <div id="메인화면">메인 화면</div>
+        <div id="던전화면" style="display:none;">던전 화면</div>
+        <div id="가방화면" style="display:none;">가방 화면</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
