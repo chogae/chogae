@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     color: #D4D4D4;
+    /* color: #BFBFBF; */
     font-size: 14px;
     box-sizing: border-box;
     display: flex;
@@ -31,4 +32,114 @@ html {
 .버튼:hover {
     background-color: #3B3B40;
 
+}
+
+@keyframes 무지개흐름 {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.마법의팔레트주인장 {
+    background: linear-gradient(90deg, #ff6ec4, #7873f5, #4adede, #4adede, #ff6ec4);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+    filter: brightness(1.2);
+}
+
+.마법의팔레트1위 {
+    background: linear-gradient(90deg, #ffd700, #ffb400, #fff176, #ffb400, #ffd700);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+    filter: brightness(1.2);
+}
+
+.마법의팔레트2위 {
+    background: linear-gradient(90deg, #cfd8dc, #b0bec5, #eceff1, #b0bec5, #cfd8dc);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+    filter: brightness(1.2);
+}
+
+.마법의팔레트3위 {
+    background: linear-gradient(90deg, #cd7f32, #b87333, #e07b39, #b87333, #cd7f32);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+    filter: brightness(1.2);
+}
+
+.마법의팔레트유니크론 {
+    background: linear-gradient(90deg, #ff4d4d, #f574a1, #a54add, #dbc64c, #ff4d4d);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+    filter: brightness(1.2);
+}
+
+.마법의팔레트노랭 {
+    background: linear-gradient(90deg, #fca235, #fbeb36, #c3fa37, #92f938, #fca235);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+}
+
+.마법의팔레트초록 {
+    background: linear-gradient(90deg, #39f84f, #3af799, #3bf6d1, #3cf2f5, #39f84f);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+}
+
+.마법의팔레트보라 {
+    background: linear-gradient(90deg, #447ced, #465ceb, #6847ea, #9047ea, #447ced);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
+}
+
+.마법의팔레트핑크 {
+    background: linear-gradient(90deg, #da47ea, #ea47c7, #ea4796, #ea4762, #da47ea);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    animation: 무지개흐름 3s linear infinite;
 }
