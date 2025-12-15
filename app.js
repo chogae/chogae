@@ -228,6 +228,9 @@ function 객체생성(추가, 이름, ...옵션들) {
     대상.style.borderRadius = "8px";
     대상.style.backgroundColor = "#1F1F1F";   // 기본 배경 유지
 
+    // 대상.addEventListener("pointerdown", e => e.stopPropagation());
+    // 대상.addEventListener("click", e => e.stopPropagation());
+
     for (const 옵션 of 옵션들) {
         const 스타일세트 = 스타일맵[옵션];
         if (!스타일세트) continue;
@@ -291,6 +294,69 @@ function 인풋객체생성(추가, 이름, ...옵션들) {
 
     추가.append(대상);
     return 대상;
+}
+
+객체생성(document.body, "화면차단기", "화면꽉", "숨기기");
+화면차단기.style.zIndex = "99999";
+화면차단기.style.opacity = "0.5";
+
+//화면잠금함수
+function 화면잠금(메시지) {
+    화면차단기.style.display = "flex";
+
+    if (메시지) {
+        알림창표시(메시지);
+    }
+}
+
+function 화면해제() {
+    화면차단기.style.display = "none";
+
+}
+
+//팝업객체생성
+객체생성(document.body, "팝업컨테이너", "테두리", "세로", "화면중앙", "여백", "숨기기");
+팝업컨테이너.style.zIndex = "999999";
+객체생성(팝업컨테이너, "팝업내용", "왼쪽", "여백", "가로꽉");
+팝업내용.innerHTML = `팝업내용`;
+객체생성(팝업컨테이너, "팝업확인취소컨테이너", "양쪽", "");
+객체생성(팝업확인취소컨테이너, "팝업확인취소컨테이너왼쪽", "", "");
+객체생성(팝업확인취소컨테이너, "팝업확인취소컨테이너오른쪽", "", "");
+객체생성(팝업확인취소컨테이너오른쪽, "팝업취소", "버튼", "테두리", "여백");
+팝업취소.innerHTML = `취소`;
+객체생성(팝업확인취소컨테이너오른쪽, "팝업확인", "버튼", "테두리", "여백");
+팝업확인.innerHTML = `확인`;
+
+
+//팝업사용함수
+function 팝업사용(메시지) {
+    try {
+        return new Promise(resolve => {
+            팝업내용.innerHTML = 메시지;
+            팝업컨테이너.style.display = "flex";
+
+            // 이전 이벤트 제거
+            팝업취소.onclick = null;
+            팝업확인.onclick = null;
+
+            // 취소 버튼 → false
+            팝업취소.onclick = () => {
+                팝업컨테이너.style.display = "none";
+                resolve(false);
+            };
+
+            // 확인 버튼 → true
+            팝업확인.onclick = () => {
+                팝업컨테이너.style.display = "none";
+                resolve(true);
+            };
+        });
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+
+    }
 }
 
 객체생성(document.body, "상단바", "고정", "가로꽉", "밑줄",);
@@ -400,69 +466,6 @@ function 알림창표시(메시지) {
 
 객체생성(게임선택컨테이너, "삼국맨", "버튼", "테두리", "여백");
 삼국맨.innerHTML = `삼국맨`;
-
-객체생성(document.body, "화면차단기", "화면꽉", "숨기기");
-화면차단기.style.zIndex = "99999";
-화면차단기.style.opacity = "0.5";
-
-//화면잠금함수
-function 화면잠금(메시지) {
-    화면차단기.style.display = "flex";
-
-    if (메시지) {
-        알림창표시(메시지);
-    }
-}
-
-function 화면해제() {
-    화면차단기.style.display = "none";
-
-}
-
-//팝업객체생성
-객체생성(document.body, "팝업컨테이너", "테두리", "세로", "화면중앙", "여백", "숨기기");
-팝업컨테이너.style.zIndex = "999999";
-객체생성(팝업컨테이너, "팝업내용", "왼쪽", "여백", "가로꽉");
-팝업내용.innerHTML = `팝업내용`;
-객체생성(팝업컨테이너, "팝업확인취소컨테이너", "양쪽", "");
-객체생성(팝업확인취소컨테이너, "팝업확인취소컨테이너왼쪽", "", "");
-객체생성(팝업확인취소컨테이너, "팝업확인취소컨테이너오른쪽", "", "");
-객체생성(팝업확인취소컨테이너오른쪽, "팝업취소", "버튼", "테두리", "여백");
-팝업취소.innerHTML = `취소`;
-객체생성(팝업확인취소컨테이너오른쪽, "팝업확인", "버튼", "테두리", "여백");
-팝업확인.innerHTML = `확인`;
-
-
-//팝업사용함수
-function 팝업사용(메시지) {
-    try {
-        return new Promise(resolve => {
-            팝업내용.innerHTML = 메시지;
-            팝업컨테이너.style.display = "flex";
-
-            // 이전 이벤트 제거
-            팝업취소.onclick = null;
-            팝업확인.onclick = null;
-
-            // 취소 버튼 → false
-            팝업취소.onclick = () => {
-                팝업컨테이너.style.display = "none";
-                resolve(false);
-            };
-
-            // 확인 버튼 → true
-            팝업확인.onclick = () => {
-                팝업컨테이너.style.display = "none";
-                resolve(true);
-            };
-        });
-
-    } catch (error) {
-        console.log(error);
-    } finally {
-
-    }
-}
 
 const 게임 = localStorage.getItem("lastGame");
 const 저장유저 = localStorage.getItem("lastUser");
@@ -635,12 +638,6 @@ async function 가글로그인화면() {
                     localStorage.setItem("lastGame", "가글");
                     localStorage.setItem("lastUser", JSON.stringify({ 아이디: id값, 비번: pw값 }));
 
-                    const 화면함수목록 = [
-                        가글패치노트화면,
-                        가글전투화면,
-                        가글설정화면,
-                    ];
-
                     화면목록[유저.스탯.화면번호]?.실행() || 화면목록[0].실행();
 
                     가글메뉴들.style.display = `flex`;
@@ -692,19 +689,6 @@ async function 가글로그인화면() {
                     }
 
                     window.서브 = 결과.가글서브;
-                    if (서브) {
-                        if (서브.스탯.차단) {
-                            화면차단기.style.display = `flex`;
-                            화면차단기.style.opacity = "1";
-                            화면차단기.innerHTML = `차단되었습니다`;
-                        } else if (서브.스탯.점검) {
-                            화면차단기.style.display = `flex`;
-                            화면차단기.style.opacity = "1";
-                            화면차단기.innerHTML = `점검중 >.<`;
-                        }
-
-                    }
-
 
                 } else {
                     알림창표시(결과.오류);
@@ -714,6 +698,19 @@ async function 가글로그인화면() {
                 console.log(error);
             } finally {
                 화면해제();
+                if (서브) {
+                    if (서브.스탯.차단) {
+                        화면차단기.style.display = `flex`;
+                        화면차단기.style.opacity = "1";
+                        화면차단기.innerHTML = `차단되었습니다`;
+                    } else if (서브.스탯.점검) {
+                        화면차단기.style.display = `flex`;
+                        화면차단기.style.opacity = "1";
+                        화면차단기.innerHTML = `점검중 >.<`;
+                    }
+
+                }
+
 
             }
         };
@@ -743,7 +740,8 @@ async function 가글로그인화면() {
 };
 
 //가글로그아웃함수
-가글로그아웃.onclick = async () => {
+가글로그아웃.onclick = async (e) => {
+    e.stopPropagation();
     try {
         화면잠금(`비밀번호 분실 시 복구가 불가능합니다`);
 
@@ -762,7 +760,8 @@ async function 가글로그인화면() {
 };
 
 //가글계정삭제함수
-가글계정삭제.onclick = async () => {
+가글계정삭제.onclick = async (e) => {
+    e.stopPropagation();
     try {
         화면잠금(`다시 만나길 고대하겠습니다`);
 
@@ -817,7 +816,7 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", "여백");
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.0.5`;
+        가글패치노트설명.innerHTML = `v0.0.6`;
 
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", "여백");
         가글패치노트들.innerHTML =
@@ -864,7 +863,6 @@ async function 가글패치노트화면() {
     }
 }
 
-//가글계정삭제함수
 가글패치노트.onclick = async () => {
     try {
         if (가글패치노트컨테이너.style.display === "none") {
@@ -2582,10 +2580,10 @@ document.addEventListener("keydown", async function (e) {
     if (가글메뉴들.style.display === "flex") {
         switch (e.key) {
             case "q":
-                가글계정삭제.onclick();
+                가글계정삭제.onclick(e);
                 break;
             case "w":
-                가글로그아웃.onclick();
+                가글로그아웃.onclick(e);
                 break;
             case "e":
                 if (가글패치노트컨테이너.style.display === "none") {
@@ -2638,6 +2636,7 @@ document.addEventListener("keydown", async function (e) {
 
 //클릭이벤트
 document.addEventListener("click", async (e) => {
+
     if (!팝업컨테이너.contains(e.target) && 팝업컨테이너.style.display === "flex") {
         팝업취소.onclick();
     }

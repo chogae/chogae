@@ -447,7 +447,7 @@ app.post("/rkrmf", async (req, res) => {
                     드랍유물 = Math.floor(Math.random() * 9) + 1; // 1 ~ 9
                     가글.스탯.유물[몬스터.스탯.번호][드랍유물]++;
 
-                    if (드랍유물 > 5) {
+                    if (몬스터.스탯.번호 > 5) {
                         const { error } = await supabase
                             .from("가글일어난일")
                             .insert({
