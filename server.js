@@ -2015,6 +2015,41 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, 가글, 서브 });
+        } else if (액션 === "주인장골드오링") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!data.스탯.주인장) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            data.스탯.현재골드 = 0;
+
+            data.스탯 = 유저스탯계산(data.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: data.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, data });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
@@ -2062,6 +2097,98 @@ app.post("/rkrmf", async (req, res) => {
     }
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //삼국맨
