@@ -126,6 +126,7 @@ app.post("/rkrmf", async (req, res) => {
                             차단: 0,
                             업뎃: 0,
                             마신: {
+                                포인트: 0,
                                 방어: 0,
                                 숭배: 0,
                             },
@@ -513,6 +514,19 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯.총숙련도 += 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
                 가글.스탯.현재숙련도 += 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
                 가글.스탯.획득숙련도 = 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
+
+                //세가지중 하나일 때 
+                if ([11, 33, 66].includes(몬스터.스탯.번호)) {
+                    const { error } = await supabase
+                        .from("가글일어난일")
+                        .insert({
+                            스탯: `${가글.스탯.닉네임}(이)가 ${처리맵[몬스터.스탯.번호]}`
+                        });
+
+                    if (error) {
+                        console.log("로그기록 INSERT 에러:", error);
+                    }
+                }
 
                 if (가글.스탯.최고층 < 가글.스탯.현재층) {
                     가글.스탯.최고층 = 현재층;
@@ -1532,7 +1546,7 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             const { data: 마신 } = await supabase
-                .from("가글")
+                .from("가글서브")
                 .select("*")
                 .order("스탯->>마신", { ascending: false })
                 .order("스탯->>전투력", { ascending: false })
