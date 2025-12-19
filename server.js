@@ -1047,6 +1047,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글일어난일 } = await supabase
                 .from("가글일어난일")
                 .select("*")
+                .limit(100)
 
             if (!가글일어난일) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1548,7 +1549,8 @@ app.post("/rkrmf", async (req, res) => {
 
             const 전투결과 = 전투시뮬레이션(
                 structuredClone(가글),
-                structuredClone(마신)
+                structuredClone(마신),
+                0
             );
 
             가글.스탯.현재스태미너--;
