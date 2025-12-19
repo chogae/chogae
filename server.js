@@ -29,15 +29,16 @@ const supabase = createClient(
 
 import bcrypt from "bcrypt";
 
-const 년월 = new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }); //"2025. 8. 26."
-const 요일 = new Date().toLocaleDateString("ko-KR", { weekday: "long", timeZone: "Asia/Seoul" }); //"화요일"
-const 시각 = new Date().toLocaleTimeString("ko-KR", { timeZone: "Asia/Seoul" }); //"오후 4:37:00"
-const 시 = Math.floor(new Date().getTime() / 3600000); // 478520,
-const 분 = Math.floor(new Date().getTime() / 60000); // 478520,
-const 초 = Math.floor(new Date().getTime() / 1000); // 478520,
-
 //가글
 app.post("/rkrmf", async (req, res) => {
+    const 년월 = new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }); //"2025. 8. 26."
+    const 요일 = new Date().toLocaleDateString("ko-KR", { weekday: "long", timeZone: "Asia/Seoul" }); //"화요일"
+    const 시각 = new Date().toLocaleTimeString("ko-KR", { timeZone: "Asia/Seoul" }); //"오후 4:37:00"
+    const 시 = Math.floor(new Date().getTime() / 3600000); // 478520,
+    const 분 = Math.floor(new Date().getTime() / 60000); // 478520,
+    const 초 = Math.floor(new Date().getTime() / 1000); // 478520,
+
+
     try {
         const { 액션, 액션데이터 } = req.body;
 
@@ -182,30 +183,6 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "비밀번호가 틀렸습니다" });
             }
 
-            const 방치시간 = 시 - 가글.스탯.접속시;
-            if (방치시간) {
-                가글.스탯.현재스태미너 = Math.min(
-                    가글.스탯.현재스태미너 + 방치시간 * 120, 가글.스탯.최대스태미너
-                );
-
-                const { error } = await supabase
-                    .from("가글로그")
-                    .insert({
-                        스탯: `${가글.스탯.아이디}(${가글.스탯.닉네임}) 방치 ${방치시간}시간`
-                    });
-
-                if (error) {
-                    console.log("로그기록 INSERT 에러:", error);
-                }
-
-            }
-            가글.스탯.접속년 = 년월;
-            가글.스탯.접속요일 = 요일;
-            가글.스탯.접속시각 = 시각;
-            가글.스탯.접속시 = 시;
-            가글.스탯.접속분 = 분;
-            가글.스탯.접속초 = 초;
-
             if (가글.스탯.화면번호 === undefined) 가글.스탯.화면번호 = 0;
 
             if (가글.스탯.전투력 === undefined) 가글.스탯.전투력 = 0;
@@ -316,16 +293,9 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯.현재숙련도 += 1000000000000;
             }
 
-            가글.스탯 = 유저스탯계산(가글.스탯);
 
-            const { error: 업데이트에러 } = await supabase
-                .from("가글")
-                .update({ 스탯: 가글.스탯 })
-                .eq("id", 가글.id);
 
-            if (업데이트에러) {
-                console.log("스탯 업데이트 오류:", 업데이트에러);
-            }
+
 
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
@@ -336,6 +306,65 @@ app.post("/rkrmf", async (req, res) => {
             if (!가글서브) {
                 return res.json({ 성공: false, 오류: "서브데이터가 존재하지 않습니다" });
             }
+
+
+
+            const 방치시간 = 시 - 가글.스탯.접속시;
+            if (방치시간) {
+
+                가글.스탯.현재스태미너 = Math.min(
+                    가글.스탯.현재스태미너 + 방치시간 * 120, 가글.스탯.최대스태미너
+                );
+
+                // const 우편함 = 가글서브.스탯.우편함 || {};
+                // const 최대키 = Object.keys(우편함).length
+                //     ? Math.max(...Object.keys(우편함).map(Number))
+                //     : 0;
+
+                // 우편함[최대키 + 1] = {
+                //     이름: "스태미너",
+                //     수량: Math.min(2000, 방치시간 * 120),
+                //     년월: 년월,
+                //     요일: 요일,
+                //     시각: 시각,
+                //     메모: `방치${방치시간}시간 스태미너 보상`
+                // };
+
+                // const { error: 우편함에러 } = await supabase
+                //     .from("가글서브")
+                //     .update({ 스탯: 가글서브.스탯 })
+                //     .eq("id", 가글.id);
+
+                // if (우편함에러) {
+                //     return res.json({ 성공: false, 오류: "실패" });
+                // }
+
+                const 마지막접속 = 가글.스탯.접속년 + 가글.스탯.접속요일 + 가글.스탯.접속시각;
+                const 마지막접속시간변환 = 가글.스탯.접속시;
+
+                const 현재시간 = 년월 + 요일 + 시각;
+                const 현재시간변환 = 시;
+
+                const { error } = await supabase
+                    .from("가글로그")
+                    .insert({
+                        스탯: `${가글.스탯.아이디}(${가글.스탯.닉네임}) 마지막접속${마지막접속}(${마지막접속시간변환}) - 현재시간${현재시간}(${현재시간변환}) = 방치시간(${방치시간})`
+                    });
+
+                if (error) {
+                    console.log("로그기록 INSERT 에러:", error);
+                }
+
+            }
+            가글.스탯.접속년 = 년월;
+            가글.스탯.접속요일 = 요일;
+            가글.스탯.접속시각 = 시각;
+            가글.스탯.접속시 = 시;
+            가글.스탯.접속분 = 분;
+            가글.스탯.접속초 = 초;
+
+
+
 
             let 업뎃했으니새고 = 0;
             if (가글서브.스탯.업뎃) {
@@ -350,6 +379,22 @@ app.post("/rkrmf", async (req, res) => {
                     console.log("스탯 업데이트 오류:", 업뎃에러);
                 }
             }
+
+
+
+
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error: 업데이트에러 } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 가글.id);
+
+            if (업데이트에러) {
+                console.log("스탯 업데이트 오류:", 업데이트에러);
+            }
+
 
             return res.json({
                 성공: true,
@@ -1944,6 +1989,9 @@ app.post("/rkrmf", async (req, res) => {
                 } else if (서브.스탯.우편함[우편번호].이름 === "샐러드") {
                     가글.스탯.총스태미너 += 60;
                     가글.스탯.현재스태미너 += 60;
+                } else if (서브.스탯.우편함[우편번호].이름 === "스태미너") {
+                    가글.스탯.총스태미너 += 120;
+                    가글.스탯.현재스태미너 += 120;
                 }
 
                 delete 서브.스탯.우편함[우편번호];
