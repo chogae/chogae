@@ -12,6 +12,7 @@ import { 히든몬스터 } from "./공용정의.js";
 import { 유물모음 } from "./공용정의.js";
 import { 색상맵 } from "./공용정의.js";
 import { 스킬모음 } from "./공용정의.js";
+import { 처리맵 } from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1075,6 +1076,7 @@ app.post("/rkrmf", async (req, res) => {
                 .from("가글")
                 .select("*")
                 .eq("스탯->>최고층", 가글.스탯.최고층)
+                .neq("스탯->>닉네임", "나주인장아니다")
 
             if (!가글전당) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1487,6 +1489,7 @@ app.post("/rkrmf", async (req, res) => {
                 .select("*")
                 .order("스탯->>마신", { ascending: false })
                 .order("스탯->>전투력", { ascending: false })
+                .neq("스탯->>닉네임", "나주인장아니다")
                 .limit(1)
                 .maybeSingle();
 
@@ -1825,6 +1828,143 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, data });
+        } else if (액션 === "우편전체보내기") {
+            const { 유저id, 새이름, 새수량, 새메모 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!data.스탯.주인장) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (새이름 && 새수량 && 새메모) {
+                const { data, error } = await supabase
+                    .from("가글서브")
+                    .select("*")
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+                await Promise.all(
+                    data.map(u => {
+                        const 우편함 = u.스탯.우편함 || {};
+                        const 최대키 = Object.keys(우편함).length
+                            ? Math.max(...Object.keys(우편함).map(Number))
+                            : 0;
+
+                        우편함[최대키 + 1] = {
+                            이름: 새이름,
+                            수량: 새수량,
+                            년월: 년월,
+                            요일: 요일,
+                            시각: 시각,
+                            메모: 새메모
+                        };
+
+                        return supabase
+                            .from("가글서브")
+                            .update({ 스탯: { ...u.스탯, 우편함 } })
+                            .eq("id", u.id);
+                    })
+                );
+            }
+
+            res.json({ 성공: true, });
+        } else if (액션 === "우편함조회") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글서브")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, data });
+        } else if (액션 === "우편받기") {
+            const { 유저id, 우편번호 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+
+
+            let 서브 = null;
+
+            if (가글) {
+
+                const { data } = await supabase
+                    .from("가글서브")
+                    .select("*")
+                    .eq("id", 유저id)
+                    .maybeSingle();
+
+                if (!data) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+                서브 = data;
+
+                if (서브.스탯.우편함[우편번호].이름 === "햄버거") {
+                    가글.스탯.총스태미너 += 300;
+                    가글.스탯.현재스태미너 += 300;
+                } else if (서브.스탯.우편함[우편번호].이름 === "샐러드") {
+                    가글.스탯.총스태미너 += 60;
+                    가글.스탯.현재스태미너 += 60;
+                }
+
+                delete 서브.스탯.우편함[우편번호];
+
+                await supabase
+                    .from("가글서브")
+                    .update({ 스탯: 서브.스탯 })
+                    .eq("id", 유저id);
+            }
+
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글, 서브 });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
