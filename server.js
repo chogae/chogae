@@ -520,7 +520,7 @@ app.post("/rkrmf", async (req, res) => {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
-                            스탯: `${가글.스탯.닉네임}(이)가 ${처리맵[몬스터.스탯.번호]}`
+                            스탯: `${가글.스탯.닉네임}(이)가 ${처리맵[몬스터.스탯.번호]()}`
                         });
 
                     if (error) {
