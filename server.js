@@ -1092,6 +1092,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글일어난일 } = await supabase
                 .from("가글일어난일")
                 .select("*")
+                .order("id", { ascending: false })
                 .limit(100)
 
             if (!가글일어난일) {
