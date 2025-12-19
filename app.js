@@ -1760,6 +1760,52 @@ async function 가글주인장화면() {
         객체생성(가글주인장컨테이너, "가글주인장설명", "가로꽉", "밑줄", "여백");
         가글주인장설명.innerHTML = `주인장 전용화면`;
 
+
+
+
+
+        객체생성(가글주인장컨테이너, "그때그때필요한거", "테두리", "버튼", "여백");
+        그때그때필요한거.innerHTML = `그때그때필요한거`;
+
+        그때그때필요한거.onclick = async () => {
+            try {
+                화면잠금();
+
+                if (!유저.스탯.주인장) {
+                    알림창표시(`돌아가쇼`);
+                    return;
+                }
+
+                const 응답 = await fetch("/rkrmf", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        액션: "그때그때필요한거",
+                        액션데이터: { 유저id: 유저.id }
+                    })
+                });
+
+                const 결과 = await 응답.json();
+
+                if (결과.성공) {
+                    알림창표시("그때그때필요한거");
+
+                } else {
+                    알림창표시(결과.오류);
+                }
+
+            } catch (error) {
+                console.log(error);
+            } finally {
+                화면해제();
+            }
+        };
+
+
+
+
+
+
         객체생성(가글주인장컨테이너, "주인장스태회복", "테두리", "버튼", "여백");
         주인장스태회복.innerHTML = `스태회복`;
 

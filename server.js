@@ -114,6 +114,7 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "생성 실패" });
             }
 
+            //신규유저
             const { error: 서브에러 } = await supabase
                 .from("가글서브")
                 .insert([
@@ -296,7 +297,7 @@ app.post("/rkrmf", async (req, res) => {
 
 
 
-
+            //기존유저
 
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
@@ -621,6 +622,10 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
+            if (!가글.스탯.주인장) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
             가글.스탯.현재스태미너 = Math.min(가글.스탯.현재스태미너 + 300, 가글.스탯.최대스태미너);;
 
             const { error: 업데이트에러 } = await supabase
@@ -649,6 +654,10 @@ app.post("/rkrmf", async (req, res) => {
                 .maybeSingle();
 
             if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!가글.스탯.주인장) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
@@ -856,7 +865,7 @@ app.post("/rkrmf", async (req, res) => {
                 const { error } = await supabase
                     .from("가글일어난일")
                     .insert({
-                        스탯: `${가글.스탯.닉네임}(이)가 무기 ${가글.스탯.방어구.이름} [${등급[가글.스탯.방어구.등급].이름}](으)로 승급!`
+                        스탯: `${가글.스탯.닉네임}(이)가 방어구 ${가글.스탯.방어구.이름} [${등급[가글.스탯.방어구.등급].이름}](으)로 승급!`
                     });
 
                 if (error) {
@@ -966,7 +975,7 @@ app.post("/rkrmf", async (req, res) => {
                 const { error } = await supabase
                     .from("가글일어난일")
                     .insert({
-                        스탯: `${가글.스탯.닉네임}(이)가 무기 ${가글.스탯.장신구.이름} [${등급[가글.스탯.장신구.등급].이름}](으)로 승급!`
+                        스탯: `${가글.스탯.닉네임}(이)가 장신구 ${가글.스탯.장신구.이름} [${등급[가글.스탯.장신구.등급].이름}](으)로 승급!`
                     });
 
                 if (error) {
@@ -1075,7 +1084,7 @@ app.post("/rkrmf", async (req, res) => {
                 const { error } = await supabase
                     .from("가글일어난일")
                     .insert({
-                        스탯: `${가글.스탯.닉네임}(이)가 무기 ${가글.스탯.날개.이름} [${등급[가글.스탯.날개.등급].이름}](으)로 승급!`
+                        스탯: `${가글.스탯.닉네임}(이)가 날개 ${가글.스탯.날개.이름} [${등급[가글.스탯.날개.등급].이름}](으)로 승급!`
                     });
 
                 if (error) {
@@ -1545,30 +1554,27 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "유저 id 부족" });
             }
 
-            const { data: 마신 } = await supabase
+            const { data: 마신서브 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .order("스탯->>마신", { ascending: false })
-                .order("스탯->>전투력", { ascending: false })
-                .neq("스탯->>닉네임", "나주인장아니다")
-                .limit(1)
+                .order("스탯->마신->>포인트", { ascending: false })
+                .limit(1);
+
+            if (!마신서브[0]) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            const { data: 마신 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 마신서브[0].id)
                 .maybeSingle();
 
             if (!마신) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            const { data: 마신서브 } = await supabase
-                .from("가글서브")
-                .select("*")
-                .eq("id", 마신.id)
-                .maybeSingle();
-
-            if (!마신서브) {
-                return res.json({ 성공: false, 오류: "실패" });
-            }
-
-            res.json({ 성공: true, 마신: 마신.스탯, 마신서브: 마신서브.스탯 });
+            res.json({ 성공: true, 마신: 마신.스탯, 마신서브: 마신서브[0].스탯 });
         } else if (액션 === "마신도전") {
             const { 유저id, } = 액션데이터;
 
@@ -2063,6 +2069,58 @@ app.post("/rkrmf", async (req, res) => {
             if (error) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
+
+            res.json({ 성공: true, data });
+        } else if (액션 === "그때그때필요한거") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!가글.스탯.주인장) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+
+            const { data, error } = await supabase
+                .from("가글서브")
+                .select("*")
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            await Promise.all(
+                data.map(u => {
+
+                    return supabase
+                        .from("가글서브")
+                        .update({
+                            스탯: {
+                                ...u.스탯,
+                                마신: {
+                                    포인트: 0,
+                                    방어: 0,
+                                    숭배: 0,
+
+                                }
+                            }
+                        })
+                        .eq("id", u.id);
+                })
+            );
+
 
             res.json({ 성공: true, data });
         } else if (액션 === "") {
