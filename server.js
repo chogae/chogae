@@ -1583,74 +1583,89 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             // 유저 조회
-            const { data: 가글 } = await supabase
+            const { data: 유저 } = await supabase
                 .from("가글")
                 .select("*")
                 .eq("id", 유저id)
-                .maybeSingle();
+                .limit(1);
 
-            if (!가글) {
+            if (!유저[0]) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (!가글.스탯.현재스태미너) {
+            if (!유저[0].스탯.현재스태미너) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            const { data: 유저서브 } = await supabase
+                .from("가글서브")
+                .select("*")
+                .eq("id", 유저id)
+                .limit(1);
+
+            if (!유저서브[0]) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            const { data: 마신서브 } = await supabase
+                .from("가글서브")
+                .select("*")
+                .order("스탯->마신->>포인트", { ascending: false })
+                .limit(1);
+
+            if (!마신서브[0]) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
             const { data: 마신 } = await supabase
                 .from("가글")
                 .select("*")
-                .order("스탯->>마신", { ascending: false })
-                .order("스탯->>전투력", { ascending: false })
-                .limit(1)
-                .maybeSingle();
+                .eq("id", 마신서브[0].id)
+                .limit(1);
 
-            if (!마신) {
+            if (!마신[0]) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (가글.스탯.닉네임 === 마신.스탯.닉네임) {
-                return res.json({ 성공: false, 오류: "실패" });
-            }
+
+            유저[0].스탯.현재스태미너--;
 
             const 전투결과 = 전투시뮬레이션(
-                structuredClone(가글),
-                structuredClone(마신),
+                structuredClone(유저[0]),
+                structuredClone(마신[0]),
                 0
             );
 
-            가글.스탯.현재스태미너--;
 
             if (전투결과.승패) {
                 const { error } = await supabase
                     .from("가글일어난일")
                     .insert({
-                        스탯: `${가글.스탯.닉네임}(이)가 새로운 마신으로 등극했습니다!`
+                        스탯: `${유저[0].스탯.닉네임}(이)가 새로운 마신으로 등극했습니다!`
                     });
 
                 if (error) {
                     console.log("로그기록 INSERT 에러:", error);
                 }
 
-                가글.스탯.마신 = 마신.스탯.마신 + 2;
+                유저서브[0].스탯.마신.포인트 = 마신서브[0].스탯.마신.포인트 + 1;
+
+                const { error: 서브업뎃에러 } = await supabase
+                    .from("가글서브")
+                    .update({ 스탯: 유저서브[0].스탯 })
+                    .eq("id", 유저id);
+
+                if (서브업뎃에러) {
+                    return res.json({ 성공: false, 오류: 서브업뎃에러 });
+                }
             } else {
 
-                const { data: 가글서브 } = await supabase
-                    .from("가글서브")
-                    .select("*")
-                    .eq("id", 마신.id)
-                    .maybeSingle();
-
-                if (!가글서브) {
-                    return res.json({ 성공: false, 오류: "서브데이터가 존재하지 않습니다" });
-                }
-
-                가글서브.스탯.마신.방어++;
+                마신서브[0].스탯.마신.방어++;
 
                 const { error: 업데이트에러 } = await supabase
                     .from("가글서브")
-                    .update({ 스탯: 가글서브.스탯 })
-                    .eq("id", 마신.id);
+                    .update({ 스탯: 마신서브[0].스탯 })
+                    .eq("id", 마신서브[0].id);
 
                 if (업데이트에러) {
                     return res.json({ 성공: false, 오류: 업데이트에러 });
@@ -1659,7 +1674,7 @@ app.post("/rkrmf", async (req, res) => {
                 const { error } = await supabase
                     .from("가글일어난일")
                     .insert({
-                        스탯: `${가글.스탯.닉네임}(이)가 마신에게 패배했습니다!`
+                        스탯: `${유저[0].스탯.닉네임}(이)가 마신에게 패배했습니다!`
                     });
 
                 if (error) {
@@ -1667,18 +1682,18 @@ app.post("/rkrmf", async (req, res) => {
                 }
             }
 
-            가글.스탯 = 유저스탯계산(가글.스탯);
+            유저[0].스탯 = 유저스탯계산(유저[0].스탯);
 
             const { error: 업데이트에러 } = await supabase
                 .from("가글")
-                .update({ 스탯: 가글.스탯 })
+                .update({ 스탯: 유저[0].스탯 })
                 .eq("id", 유저id);
 
             if (업데이트에러) {
                 return res.json({ 성공: false, 오류: 업데이트에러 });
             }
 
-            res.json({ 성공: true, 가글, 마신, 전투결과 });
+            res.json({ 성공: true, 가글: 유저[0], 마신: 마신[0], 전투결과 });
         } else if (액션 === "마신숭배") {
             const { 유저id, } = 액션데이터;
 
@@ -1697,19 +1712,17 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            const { data: 마신 } = await supabase
-                .from("가글")
+            const { data: 마신서브 } = await supabase
+                .from("가글서브")
                 .select("*")
-                .order("스탯->>마신", { ascending: false })
-                .order("스탯->>전투력", { ascending: false })
-                .limit(1)
-                .maybeSingle();
+                .order("스탯->마신->>포인트", { ascending: false })
+                .limit(1);
 
-            if (!마신) {
+            if (!마신서브[0]) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (가글.스탯.닉네임 === 마신.스탯.닉네임) {
+            if (가글.스탯.닉네임 === 마신서브[0].스탯.닉네임) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
@@ -1725,25 +1738,15 @@ app.post("/rkrmf", async (req, res) => {
                 console.log("로그기록 INSERT 에러:", error);
             }
 
-            const { data: 가글서브 } = await supabase
+
+            마신서브[0].스탯.마신.숭배++;
+            const { error: 서브업뎃에러 } = await supabase
                 .from("가글서브")
-                .select("*")
-                .eq("id", 마신.id)
-                .maybeSingle();
+                .update({ 스탯: 마신서브[0].스탯 })
+                .eq("id", 마신서브[0].id);
 
-            if (!가글서브) {
-                return res.json({ 성공: false, 오류: "서브데이터가 존재하지 않습니다" });
-            }
-
-            가글서브.스탯.마신.숭배++;
-
-            const { error: 서브에러 } = await supabase
-                .from("가글서브")
-                .update({ 스탯: 가글서브.스탯 })
-                .eq("id", 마신.id);
-
-            if (서브에러) {
-                return res.json({ 성공: false, 오류: 서브에러 });
+            if (서브업뎃에러) {
+                return res.json({ 성공: false, 오류: 서브업뎃에러 });
             }
 
 
