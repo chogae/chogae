@@ -1894,6 +1894,67 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, data });
+        } else if (액션 === "우편한명보내기") {
+            const { 유저id, 새이름, 새수량, 새메모, 닉네임 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!data.스탯.주인장) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (새이름 && 새수량 && 새메모 && 닉네임) {
+                const { data, error } = await supabase
+                    .from("가글서브")
+                    .select("*")
+                    .eq("스탯->>닉네임", 닉네임)
+                    .limit(1)
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+                const 우편함 = data[0].스탯.우편함 || {};
+                const 최대키 = Object.keys(우편함).length
+                    ? Math.max(...Object.keys(우편함).map(Number))
+                    : 0;
+
+                우편함[최대키 + 1] = {
+                    이름: 새이름,
+                    수량: 새수량,
+                    년월: 년월,
+                    요일: 요일,
+                    시각: 시각,
+                    메모: 새메모
+                };
+
+                const { error: 업데이트에러 } = await supabase
+                    .from("가글서브")
+                    .update({ 스탯: data[0].스탯 })
+                    .eq("스탯->>닉네임", 닉네임);
+
+                if (업데이트에러) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+            } else {
+                return res.json({ 성공: false, 오류: "실패" });
+
+            }
+
+            res.json({ 성공: true, });
         } else if (액션 === "우편전체보내기") {
             const { 유저id, 새이름, 새수량, 새메모 } = 액션데이터;
 
