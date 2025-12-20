@@ -1710,7 +1710,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 마신서브 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .order("스탯->마신->>포인트", { ascending: false })
+                .order("스탯->마신->포인트", { ascending: false })
                 .limit(1);
 
             if (!마신서브[0]) {
