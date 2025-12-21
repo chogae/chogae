@@ -1140,14 +1140,22 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글전당 } = await supabase
                 .from("가글")
                 .select("*")
-                .eq("스탯->>최고층", 가글.스탯.최고층)
                 .neq("스탯->>닉네임", "나주인장아니다")
 
             if (!가글전당) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            res.json({ 성공: true, 가글전당 });
+            const { data: 가글서브 } = await supabase
+                .from("가글서브")
+                .select("*")
+                .neq("스탯->>닉네임", "나주인장아니다")
+
+            if (!가글서브) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글전당, 가글서브 });
         } else if (액션 === "업뎃때리기") {
 
             const { data: 목록, error: 조회에러 } = await supabase
