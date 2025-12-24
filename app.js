@@ -4,6 +4,12 @@
 
 해야할일
 
+전당화면 미니정보창
+팔레트 적용된건 버튼 안됨
+광고버프 3종
+공 방 체 절댓값 중 하나 보너스
+공 방 체 보너스 중 하나 보너스
+스킬 9종 중 하나 보너스
 
 Ctrl + Shift + P
 Developer: Inspect Editor Tokens and Scopes
@@ -177,7 +183,7 @@ const 스타일맵 = {
         top: "30%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "300px",
+        width: "330px",
     },
     테두리: {
         border: "1px solid #D4D4D4",
@@ -344,6 +350,10 @@ function 화면해제() {
 팝업취소.innerHTML = `취소`;
 객체생성(팝업확인취소컨테이너오른쪽, "팝업확인", "버튼", "테두리", "여백");
 팝업확인.innerHTML = `확인`;
+
+객체생성(document.body, "미니정보창컨테이너", "테두리", "세로", "화면중앙", "여백", "숨기기");
+미니정보창컨테이너.style.zIndex = "9999";
+
 
 //팝업사용함수
 function 팝업사용(메시지) {
@@ -899,12 +909,16 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", "여백");
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.1.5`;
+        가글패치노트설명.innerHTML = `v0.1.6`;
 
         //패치노트작성
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", "여백");
         가글패치노트들.innerHTML =
             `
+        <br>
+        25.12.24<br>
+        패배해도 멈추지 않는 무자동 버튼이 구현되었습니다<br>
+                       
         <br>
         25.12.23<br>
         영혼드랍박스와 유물드랍박스가 겹쳤을 때 하나가<br>
@@ -1155,26 +1169,33 @@ async function 가글전투화면() {
         객체생성(반자동풀자동, "반자동", "버튼", "", "여백", "");
         반자동.innerHTML = `반자동`;
 
-        객체생성(반자동풀자동, "여기클릭", "", "", "여백", "");
-        여기클릭.innerHTML = svg크기변환(아래방향, 14, "중빨");
-        const svg = 여기클릭.querySelector("svg");
-        const paths = svg.querySelectorAll("path");
-        const arrow = paths[1];
-        const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        wrapper.setAttribute("transform-origin", "center");
-        wrapper.setAttribute("transform-box", "fill-box");
-        const animate = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-        animate.setAttribute("attributeName", "transform");
-        animate.setAttribute("type", "scale");
-        animate.setAttribute("values", "1 1; 1 0.8; 1 1.2; 1 1");
-        animate.setAttribute("dur", "1s");
-        animate.setAttribute("repeatCount", "indefinite");
-        arrow.replaceWith(wrapper);
-        wrapper.appendChild(arrow);
-        wrapper.appendChild(animate);
+        // 객체생성(반자동풀자동, "여기클릭", "", "", "여백", "");
+        // 여기클릭.innerHTML = svg크기변환(아래방향, 14, "중빨");
+        // const svg = 여기클릭.querySelector("svg");
+        // const paths = svg.querySelectorAll("path");
+        // const arrow = paths[1];
+        // const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        // wrapper.setAttribute("transform-origin", "center");
+        // wrapper.setAttribute("transform-box", "fill-box");
+        // const animate = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+        // animate.setAttribute("attributeName", "transform");
+        // animate.setAttribute("type", "scale");
+        // animate.setAttribute("values", "1 1; 1 0.8; 1 1.2; 1 1");
+        // animate.setAttribute("dur", "1s");
+        // animate.setAttribute("repeatCount", "indefinite");
+        // arrow.replaceWith(wrapper);
+        // wrapper.appendChild(arrow);
+        // wrapper.appendChild(animate);
 
         객체생성(반자동풀자동, "풀자동", "버튼", "", "여백", "");
         풀자동.innerHTML = `풀자동`;
+
+
+        객체생성(반자동풀자동, "무자동", "버튼", "", "여백", "");
+        무자동.innerHTML = `무자동`;
+
+
+
         객체생성(반자동악마성풀자동, "악마성", "테두리", "버튼", "여백", "");
         악마성.innerHTML = 유저.스탯.히든 ? `재앙` : `악마성`;
         악마성.style.backgroundColor = 유저.스탯.히든 ? `${색상맵[`진남`]}` : `${색상맵[`중검`]}`;
@@ -1284,7 +1305,13 @@ async function 가글전투화면() {
                         객체생성(반자동악마성풀자동, "패배", "", "진하게", "여백", "크게");
                         패배.innerHTML = `패배`;
                         패배.style.color = 색상맵["중빨"];
-                        자동플래그 = 0;
+
+                        if (자동플래그 === 3) {
+                            악마성.onclick();
+                        } else {
+                            자동플래그 = 0;
+                        }
+
                     }
 
                     for (const i in 결과.전투결과.전투로그) {
@@ -1386,6 +1413,11 @@ async function 가글전투화면() {
 
         풀자동.onclick = () => {
             자동플래그 = 자동플래그 ? 0 : 2;
+            악마성.onclick();
+        };
+
+        무자동.onclick = () => {
+            자동플래그 = 자동플래그 ? 0 : 3;
             악마성.onclick();
         };
 
@@ -3043,7 +3075,7 @@ async function 가글전당화면() {
         가글전당컨테이너.innerHTML = ``;
 
         객체생성(가글전당컨테이너, "가글전당설명", "가로꽉", "밑줄", "여백");
-        가글전당설명.innerHTML = `유저닉네임 클릭 시 미니정보창을 볼 수 있습니다`;
+        가글전당설명.innerHTML = `유저의 행을 클릭 시 미니정보창을 볼 수 있습니다`;
 
         try {
             화면잠금();
@@ -3064,21 +3096,17 @@ async function 가글전당화면() {
                 결과.가글전당.sort((a, b) => b.스탯.전투력 - a.스탯.전투력);
                 결과.가글서브.sort((a, b) => b.스탯.마신.방어 - a.스탯.마신.방어);
 
-                // 객체생성(가글전당컨테이너, `전당최고층`, "가로꽉", "밑줄", "여백");
-                // 전당최고층.innerHTML = `악마성 ${유저.스탯.최고층}층`;
-
                 for (const i in 결과.가글전당) {
-                    객체생성(가글전당컨테이너, `${i}전당정보`, "양쪽", "밑줄", "");
+                    객체생성(가글전당컨테이너, `${i}전당정보`, "양쪽", "밑줄", "버튼");
 
-                    객체생성(window[`${i}전당정보`], `${i}전당순위`, "왼쪽", "플렉스일", "여백");
+                    객체생성(window[`${i}전당정보`], `${i}전당순위`, "왼쪽", "플렉스일", "여백", "버튼");
                     window[`${i}전당순위`].innerHTML = `${(+i) + 1}위`;
 
-                    객체생성(window[`${i}전당정보`], `${i}전당전투력`, "", "플렉스일", "여백");
+                    객체생성(window[`${i}전당정보`], `${i}전당전투력`, "버튼", "플렉스일", "여백");
                     window[`${i}전당전투력`].innerHTML = `전투력 ${숫자한글(결과.가글전당[i].스탯.전투력)}`;
 
                     객체생성(window[`${i}전당정보`], `${i}전당닉넴`, "오른쪽", "플렉스일", "여백", "버튼");
                     window[`${i}전당닉넴`].innerHTML = `${결과.가글전당[i].스탯.닉네임}`;
-
 
 
                     if (결과.가글전당[i].스탯.닉네임 === 결과.가글서브[0].스탯.닉네임) {
@@ -3092,9 +3120,70 @@ async function 가글전당화면() {
 
                     }
 
-                    window[`${i}전당닉넴`].onclick = async () => {
+                    if (결과.가글전당[i].스탯.주인장) {
+                        window[`${i}전당닉넴`].className = `마법의팔레트주인장`;
+
+                    }
+
+                    //수정중
+                    window[`${i}전당정보`].onclick = async (e) => {
+                        e.stopPropagation();
                         try {
                             알림창표시(`미니정보창은 구현중입니다`);
+
+                            if (미니정보창컨테이너.style.display === `flex`) {
+                                미니정보창컨테이너.style.display = `none`;
+                                return;
+                            }
+                            미니정보창컨테이너.style.display = `flex`;
+                            미니정보창컨테이너.innerHTML = ``;
+
+                            객체생성(미니정보창컨테이너, `미니일행`, ``, ``, ``);
+                            객체생성(미니일행, `미니레벨`, ``, ``, `여백`);
+                            미니레벨.innerHTML = `Lv. ${결과.가글전당[i].스탯.레벨}`;
+                            객체생성(미니일행, `미니닉넴`, ``, ``, `여백`);
+                            미니닉넴.innerHTML = 결과.가글전당[i].스탯.닉네임;
+
+
+
+                            // 객체생성(미니정보창컨테이너, `미니이행`, `양쪽`, ``, ``);
+
+                            // 객체생성(미니이행, `미니이행좌`, `양쪽`, `플렉스일`, `밑줄`, `여백`);
+
+                            // 객체생성(미니이행좌, `미니이행좌좌`, `왼쪽`, ``, ``);
+                            // 미니이행좌좌.innerHTML = `공격력`;
+
+                            // 객체생성(미니이행좌, `미니이행좌우`, `오른쪽`, ``, ``);
+                            // 미니이행좌우.innerHTML = `${결과.가글전당[i].스탯.최종공격력}`;
+
+                            // 객체생성(미니이행, `미니이행우`, `양쪽`, `플렉스일`, `밑줄`, `여백`);
+
+                            // 객체생성(미니이행우, `미니이행우좌`, `왼쪽`, ``, ``);
+                            // 미니이행우좌.innerHTML = `공보너스`;
+
+                            // 객체생성(미니이행우, `미니이행우우`, `오른쪽`, ``, ``);
+                            // 미니이행우우.innerHTML = `${결과.가글전당[i].스탯.유물공격력보너스}%`;
+
+                            // 객체생성(미니정보창컨테이너, `미니삼행`, `양쪽`, ``, ``);
+
+                            // 객체생성(미니삼행, `미니삼행좌`, `양쪽`, `플렉스일`, `밑줄`, `여백`);
+
+                            // 객체생성(미니삼행좌, `미니삼행좌좌`, `왼쪽`, ``, ``);
+                            // 미니삼행좌좌.innerHTML = `방어력`;
+
+                            // 객체생성(미니삼행좌, `미니삼행좌우`, `오른쪽`, ``, ``);
+                            // 미니삼행좌우.innerHTML = `${결과.가글전당[i].스탯.최종방어력}`;
+
+                            // 객체생성(미니삼행, `미니삼행우`, `양쪽`, `플렉스일`, `밑줄`, `여백`);
+
+                            // 객체생성(미니삼행우, `미니삼행우좌`, `왼쪽`, ``, ``);
+                            // 미니삼행우좌.innerHTML = `방보너스`;
+
+                            // 객체생성(미니삼행우, `미니삼행우우`, `오른쪽`, ``, ``);
+                            // 미니삼행우우.innerHTML = `${결과.가글전당[i].스탯.유물방어력보너스}%`;
+
+
+
 
                         } catch (error) {
                             console.log(error);
@@ -4508,9 +4597,14 @@ document.addEventListener("click", async (e) => {
         팝업취소.onclick();
     }
 
-    if (!e.target.matches("#반자동") && !e.target.matches("#풀자동")) {
+    미니정보창컨테이너.style.display = "none";
+    //    if (!미니정보창컨테이너.contains(e.target) && 미니정보창컨테이너.style.display === "flex") {
+    //     }
+
+    if (!e.target.matches("#반자동") && !e.target.matches("#풀자동") && !e.target.matches("#무자동")) {
         자동플래그 = 0;
     }
+
 
 });
 
