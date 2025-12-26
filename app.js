@@ -594,233 +594,245 @@ async function 가글로그인화면() {
 
         가글로그인컨테이너.innerHTML = ``;
 
-        객체생성(가글로그인컨테이너, "가글로그인설명", "가로꽉", "밑줄", "여백");
-        가글로그인설명.innerHTML = `아이디는 한글만 가능합니다`;
 
-        인풋객체생성(가글로그인컨테이너, "가글아이디입력", "", "", "여백");
-        가글아이디입력.type = "text";
-        가글아이디입력.placeholder = "아이디 입력";
+        객체생성(가글로그인컨테이너, "가글로그인설명", "가로꽉", "밑줄", "여백", "세로");
+        가글로그인설명.innerHTML = `
+<a href="https://open.kakao.com/o/gbnmdWvh" target="_blank" style="color:#4FC1FF;">
+https://open.kakao.com/o/gbnmdWvh
+</a><br>
+주인장의 실수로 데이터가 꼬여버렸습니다<br>
+엎질러진 물, 코드 재정비좀 하고<br>
+12월 29일 월요일 오전 10시 30분에 재오픈하겠습니다<br>
+기다리는동안 위 단톡에 오셔서 정보얻어주심 감사하겠습니다<br>
+단톡에 오지 않으셔도 해될건 없으니 월요일에 꼭 좀<br>
+다시 찾아와 주십쇼..<br>
+죄송합니다(__)<br>
+`;
 
-        인풋객체생성(가글로그인컨테이너, "가글비번입력", "", "", "여백");
-        가글비번입력.type = "password";
-        가글비번입력.placeholder = "비번 입력";
+        // 인풋객체생성(가글로그인컨테이너, "가글아이디입력", "", "", "여백");
+        // 가글아이디입력.type = "text";
+        // 가글아이디입력.placeholder = "아이디 입력";
 
-        객체생성(가글로그인컨테이너, "가글회원가입", "버튼", "테두리", "여백");
-        가글회원가입.innerHTML = `회원가입`;
-        객체생성(가글로그인컨테이너, "가글로그인", "버튼", "테두리", "여백");
-        가글로그인.innerHTML = `로그인`;
+        // 인풋객체생성(가글로그인컨테이너, "가글비번입력", "", "", "여백");
+        // 가글비번입력.type = "password";
+        // 가글비번입력.placeholder = "비번 입력";
 
-        가글아이디입력.addEventListener("input", () => {
-            const 원본 = 가글아이디입력.value;
-            const 한글만 = 원본.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
+        // 객체생성(가글로그인컨테이너, "가글회원가입", "버튼", "테두리", "여백");
+        // 가글회원가입.innerHTML = `회원가입`;
+        // 객체생성(가글로그인컨테이너, "가글로그인", "버튼", "테두리", "여백");
+        // 가글로그인.innerHTML = `로그인`;
 
-            if (원본 !== 한글만) {
-                알림창표시("아이디는 한글만 가능합니다");
-                가글아이디입력.value = 한글만;
-            }
-        });
+        // 가글아이디입력.addEventListener("input", () => {
+        //     const 원본 = 가글아이디입력.value;
+        //     const 한글만 = 원본.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
 
-        가글비번입력.addEventListener("keydown", async (e) => {
-            // 엔터키
-            if (e.key === "Enter") {
-                가글로그인.click();
-            }
+        //     if (원본 !== 한글만) {
+        //         알림창표시("아이디는 한글만 가능합니다");
+        //         가글아이디입력.value = 한글만;
+        //     }
+        // });
 
-            // 스페이스바 (원하는 경우만)
-            if (e.key === " ") {    // 또는 e.code === "Space"
-                e.preventDefault(); // 스페이스 입력 막음
-                가글로그인.click();
-            }
-        });
+        // 가글비번입력.addEventListener("keydown", async (e) => {
+        //     // 엔터키
+        //     if (e.key === "Enter") {
+        //         가글로그인.click();
+        //     }
 
-        //가글회원가입함수
-        가글회원가입.onclick = async () => {
-            try {
-                화면잠금(`회원가입중입니다`);
+        //     // 스페이스바 (원하는 경우만)
+        //     if (e.key === " ") {    // 또는 e.code === "Space"
+        //         e.preventDefault(); // 스페이스 입력 막음
+        //         가글로그인.click();
+        //     }
+        // });
 
-                const id값 = 가글아이디입력.value.trim();
-                const pw값 = 가글비번입력.value.trim();
+        // //가글회원가입함수
+        // 가글회원가입.onclick = async () => {
+        //     try {
+        //         화면잠금(`회원가입중입니다`);
 
-                if (!id값 || !pw값) {
-                    알림창표시("아이디/비밀번호를 입력해주세요");
-                    return;
-                }
+        //         const id값 = 가글아이디입력.value.trim();
+        //         const pw값 = 가글비번입력.value.trim();
 
-                // 한글만 허용
-                if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
-                    알림창표시("아이디는 한글만 가능합니다");
-                    return;
-                }
+        //         if (!id값 || !pw값) {
+        //             알림창표시("아이디/비밀번호를 입력해주세요");
+        //             return;
+        //         }
 
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "가글회원가입",
-                        액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
-                    })
-                });
+        //         // 한글만 허용
+        //         if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
+        //             알림창표시("아이디는 한글만 가능합니다");
+        //             return;
+        //         }
 
-                const 결과 = await 응답.json();
+        //         const 응답 = await fetch("/rkrmf", {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({
+        //                 액션: "가글회원가입",
+        //                 액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
+        //             })
+        //         });
 
-                if (결과.성공) {
-                    알림창표시("가글회원가입 완료!");
+        //         const 결과 = await 응답.json();
 
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        //가글로그인함수
-        가글로그인.onclick = async () => {
-            try {
-                화면잠금(`로그인중입니다`);
-
-                if (window.가글자동로그인) {
-                    알림창표시(`자동로그인중입니다`);
-                }
+        //         if (결과.성공) {
+        //             알림창표시("가글회원가입 완료!");
 
 
-                const id값 = 가글아이디입력.value.trim();
-                const pw값 = 가글비번입력.value.trim();
-
-                if (!id값 || !pw값) {
-                    알림창표시("아이디/비밀번호를 입력해주세요");
-                    return;
-                }
-
-                // 한글만 허용
-                if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
-                    알림창표시("아이디는 한글만 가능합니다");
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "가글로그인",
-                        액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("로그인되었습니다");
-
-                    if (결과.업뎃했으니새고) {
-                        location.reload();
-                    }
-                    유저 = 결과.가글;
-                    localStorage.setItem("lastGame", "가글");
-                    localStorage.setItem("lastUser", JSON.stringify({ 아이디: id값, 비번: pw값 }));
-
-                    화면목록[유저.스탯.화면번호]?.실행() || 화면목록[0].실행();
-
-                    가글메뉴들.style.display = `flex`;
-
-                    function 가글메뉴툴팁설정(버튼, 툴팁) {
-
-                        // 보여주기
-                        function show() {
-                            툴팁.style.display = "flex";
-
-                            const rect = 버튼.getBoundingClientRect();
-                            const tip = 툴팁.getBoundingClientRect();
-
-                            툴팁.style.left = (rect.right - tip.width) + "px";
-                            툴팁.style.top = (rect.bottom - 0) + "px";
-                        }
-
-                        // 숨기기
-                        function hide() {
-                            툴팁.style.display = "none";
-                        }
-
-                        // 버튼 위로 가면 열림
-                        버튼.addEventListener("mouseenter", () => {
-                            if (window.가글터치모드) return;
-                            show();
-                        });
-
-                        // 버튼에서 나갈 때
-                        버튼.addEventListener("mouseleave", async (e) => {
-                            if (window.가글터치모드) return;
-                            if (!툴팁.contains(e.relatedTarget)) hide();
-                        });
-
-                        // 툴팁에서 나갈 때
-                        툴팁.addEventListener("mouseleave", async (e) => {
-                            if (window.가글터치모드) return;
-                            if (!버튼.contains(e.relatedTarget)) hide();
-                        });
-                    }
-
-                    가글메뉴툴팁설정(가글정보, 가글정보툴팁);
-                    가글메뉴툴팁설정(가글성장, 가글성장툴팁);
-                    가글메뉴툴팁설정(가글월드, 가글월드툴팁);
-
-                    window.마신방어1위 = 결과.마신방어1위;
-                    window.마신방어2위 = 결과.마신방어2위;
-                    window.마신방어3위 = 결과.마신방어3위;
-
-                    게임이름.innerHTML = 유저.스탯.닉네임;
-                    if (마신방어1위.스탯.닉네임 === 유저.스탯.닉네임) {
-                        게임이름.style.className = `마법의팔레트1위`;
-                    } else if (마신방어2위.스탯.닉네임 === 유저.스탯.닉네임) {
-                        게임이름.style.className = `마법의팔레트2위`;
-
-                    } else if (마신방어3위.스탯.닉네임 === 유저.스탯.닉네임) {
-                        게임이름.style.className = `마법의팔레트3위`;
-
-                    }
+        //         } else {
+        //             알림창표시(결과.오류);
+        //         }
 
 
-                    if (유저.스탯.주인장) {
-                        가글주인장.style.display = `flex`;
-                    }
+        //     } catch (error) {
+        //         console.log(error);
+        //     } finally {
+        //         화면해제();
+        //     }
+        // };
 
-                    서브 = 결과.가글서브;
+        // //가글로그인함수
+        // 가글로그인.onclick = async () => {
+        //     try {
+        //         화면잠금(`로그인중입니다`);
 
-                    // if (서브.스탯.) {
-                    //     // setInterval(() => {
-                    //     //     황금표시(`현재 버그발생`);
-                    //     // }, 30000);
-                    // }
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-                if (서브) {
-                    if (서브.스탯.차단) {
-                        화면차단기.style.display = `flex`;
-                        화면차단기.style.opacity = "1";
-                        화면차단기.innerHTML = `차단되었습니다`;
-                    } else if (서브.스탯.점검) {
-                        화면차단기.style.display = `flex`;
-                        화면차단기.style.opacity = "1";
-                        화면차단기.innerHTML = `점검중 >.<`;
-                    }
-
-                }
+        //         if (window.가글자동로그인) {
+        //             알림창표시(`자동로그인중입니다`);
+        //         }
 
 
-            }
-        };
+        //         const id값 = 가글아이디입력.value.trim();
+        //         const pw값 = 가글비번입력.value.trim();
+
+        //         if (!id값 || !pw값) {
+        //             알림창표시("아이디/비밀번호를 입력해주세요");
+        //             return;
+        //         }
+
+        //         // 한글만 허용
+        //         if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
+        //             알림창표시("아이디는 한글만 가능합니다");
+        //             return;
+        //         }
+
+        //         const 응답 = await fetch("/rkrmf", {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({
+        //                 액션: "가글로그인",
+        //                 액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
+        //             })
+        //         });
+
+        //         const 결과 = await 응답.json();
+
+        //         if (결과.성공) {
+        //             알림창표시("로그인되었습니다");
+
+        //             if (결과.업뎃했으니새고) {
+        //                 location.reload();
+        //             }
+        //             유저 = 결과.가글;
+        //             localStorage.setItem("lastGame", "가글");
+        //             localStorage.setItem("lastUser", JSON.stringify({ 아이디: id값, 비번: pw값 }));
+
+        //             화면목록[유저.스탯.화면번호]?.실행() || 화면목록[0].실행();
+
+        //             가글메뉴들.style.display = `flex`;
+
+        //             function 가글메뉴툴팁설정(버튼, 툴팁) {
+
+        //                 // 보여주기
+        //                 function show() {
+        //                     툴팁.style.display = "flex";
+
+        //                     const rect = 버튼.getBoundingClientRect();
+        //                     const tip = 툴팁.getBoundingClientRect();
+
+        //                     툴팁.style.left = (rect.right - tip.width) + "px";
+        //                     툴팁.style.top = (rect.bottom - 0) + "px";
+        //                 }
+
+        //                 // 숨기기
+        //                 function hide() {
+        //                     툴팁.style.display = "none";
+        //                 }
+
+        //                 // 버튼 위로 가면 열림
+        //                 버튼.addEventListener("mouseenter", () => {
+        //                     if (window.가글터치모드) return;
+        //                     show();
+        //                 });
+
+        //                 // 버튼에서 나갈 때
+        //                 버튼.addEventListener("mouseleave", async (e) => {
+        //                     if (window.가글터치모드) return;
+        //                     if (!툴팁.contains(e.relatedTarget)) hide();
+        //                 });
+
+        //                 // 툴팁에서 나갈 때
+        //                 툴팁.addEventListener("mouseleave", async (e) => {
+        //                     if (window.가글터치모드) return;
+        //                     if (!버튼.contains(e.relatedTarget)) hide();
+        //                 });
+        //             }
+
+        //             가글메뉴툴팁설정(가글정보, 가글정보툴팁);
+        //             가글메뉴툴팁설정(가글성장, 가글성장툴팁);
+        //             가글메뉴툴팁설정(가글월드, 가글월드툴팁);
+
+        //             window.마신방어1위 = 결과.마신방어1위;
+        //             window.마신방어2위 = 결과.마신방어2위;
+        //             window.마신방어3위 = 결과.마신방어3위;
+
+        //             게임이름.innerHTML = 유저.스탯.닉네임;
+        //             if (마신방어1위.스탯.닉네임 === 유저.스탯.닉네임) {
+        //                 게임이름.style.className = `마법의팔레트1위`;
+        //             } else if (마신방어2위.스탯.닉네임 === 유저.스탯.닉네임) {
+        //                 게임이름.style.className = `마법의팔레트2위`;
+
+        //             } else if (마신방어3위.스탯.닉네임 === 유저.스탯.닉네임) {
+        //                 게임이름.style.className = `마법의팔레트3위`;
+
+        //             }
+
+
+        //             if (유저.스탯.주인장) {
+        //                 가글주인장.style.display = `flex`;
+        //             }
+
+        //             서브 = 결과.가글서브;
+
+        //             // if (서브.스탯.) {
+        //             //     // setInterval(() => {
+        //             //     //     황금표시(`현재 버그발생`);
+        //             //     // }, 30000);
+        //             // }
+
+        //         } else {
+        //             알림창표시(결과.오류);
+        //         }
+
+        //     } catch (error) {
+        //         console.log(error);
+        //     } finally {
+        //         화면해제();
+        //         if (서브) {
+        //             if (서브.스탯.차단) {
+        //                 화면차단기.style.display = `flex`;
+        //                 화면차단기.style.opacity = "1";
+        //                 화면차단기.innerHTML = `차단되었습니다`;
+        //             } else if (서브.스탯.점검) {
+        //                 화면차단기.style.display = `flex`;
+        //                 화면차단기.style.opacity = "1";
+        //                 화면차단기.innerHTML = `점검중 >.<`;
+        //             }
+
+        //         }
+
+
+        //     }
+        // };
 
     } catch (error) {
         console.log(error);
