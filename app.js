@@ -3147,8 +3147,6 @@ async function 가글전당화면() {
                     window[`${i}전당정보`].onclick = async (e) => {
                         e.stopPropagation();
                         try {
-                            알림창표시(`미니정보창은 구현중입니다`);
-
                             const 유저들 = 결과.가글전당[i].스탯;
 
                             if (미니정보창컨테이너.style.display === `flex`) {
