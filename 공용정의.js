@@ -68,7 +68,7 @@ export const 유물모음 = {
     9: { 이름: "바론의 촉수", 설명: "원하는 보너스 스탯 +5.0%" },
 };
 
-export const 처리맵 = {
+export const 맵핑 = {
     "무기": () => {
     },
     "햄버거": () => {
@@ -100,8 +100,8 @@ export const 처리맵 = {
     },
 };
 
-// 처리맵[obj[key]]?.();
-// const 결과 = 처리맵[obj[key]]?.() ?? "키없음";
+// 맵핑[obj[key]]?.();
+// const 결과 = 맵핑[obj[key]]?.() ?? "키없음";
 
 export const 상점모음 = {
     1: {},

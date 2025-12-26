@@ -12,7 +12,7 @@ import { 히든몬스터 } from "./공용정의.js";
 import { 유물모음 } from "./공용정의.js";
 import { 색상맵 } from "./공용정의.js";
 import { 스킬모음 } from "./공용정의.js";
-import { 처리맵 } from "./공용정의.js";
+import { 맵핑 } from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -286,6 +286,11 @@ app.post("/rkrmf", async (req, res) => {
                 2: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 }
             };
 
+            if (가글.스탯.스킬등급 === undefined) 가글.스탯.스킬등급 = {
+                1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1,
+            };
+
+
             if (가글.스탯.프리셋 === undefined) 가글.스탯.프리셋 = 0;
 
             if (가글.스탯.스킬포인트 === undefined) 가글.스탯.스킬포인트 = 0;
@@ -388,11 +393,26 @@ app.post("/rkrmf", async (req, res) => {
             }
 
 
+
+            const { data, error } = await supabase
+                .from("가글서브")
+                .select("*")
+
+            if (!data || error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            data.sort((a, b) => b.스탯.마신.방어 - a.스탯.마신.방어);
+
+
             return res.json({
                 성공: true,
                 가글,
                 가글서브,
                 업뎃했으니새고,
+                마신방어1위: data[0],
+                마신방어2위: data[1],
+                마신방어3위: data[2],
             });
         } else if (액션 === "계정삭제") {
             const { 유저id } = 액션데이터;
@@ -1850,7 +1870,7 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             data.스탯.현재스태미너--;
-            const 처리맵 = {
+            const 맵핑 = {
                 "무기": () => {
                     data.스탯.무기.이름 = 장비이름;
                 },
@@ -1868,7 +1888,7 @@ app.post("/rkrmf", async (req, res) => {
                 },
             };
 
-            처리맵[장비]?.();
+            맵핑[장비]?.();
 
 
             data.스탯 = 유저스탯계산(data.스탯);
