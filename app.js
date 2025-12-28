@@ -708,6 +708,8 @@ async function 가글로그인화면() {
 
                 if (!조건) {
                     알림창표시(`12월 29일 월요일 오전 10시 30분에 오픈됩니다`);
+                    localStorage.removeItem("lastGame");
+                    localStorage.removeItem("lastUser");
                     return;
                 }
 
