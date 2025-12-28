@@ -4,6 +4,8 @@
 
 해야할일
 
+유물 등급당 세종류로 쪼개서 확정수치강화
+스태미너 소모량 등급줘서 9등급까지 한번에 9개씩 소모되게
 광고버프 3종
 공 방 체 절댓값 중 하나 보너스
 공 방 체 보너스 중 하나 보너스
@@ -33,6 +35,9 @@ import { 유물모음 } from "./공용정의.js";
 import { 색상맵 } from "./공용정의.js";
 import { 스킬모음 } from "./공용정의.js";
 import { 맵핑 } from "./공용정의.js";
+import { 유물확률표 } from "./공용정의.js";
+import { 삼배수 } from "./공용정의.js";
+import { 히든뽑기 } from "./공용정의.js";
 
 
 document.addEventListener("dragstart", e => e.preventDefault());
@@ -596,243 +601,259 @@ async function 가글로그인화면() {
 
 
         객체생성(가글로그인컨테이너, "가글로그인설명", "가로꽉", "밑줄", "여백", "세로");
-        가글로그인설명.innerHTML = `
-<a href="https://open.kakao.com/o/gbnmdWvh" target="_blank" style="color:#4FC1FF;">
-https://open.kakao.com/o/gbnmdWvh
-</a><br>
-주인장의 실수로 데이터가 꼬여버렸습니다<br>
-엎질러진 물, 코드 재정비좀 하고<br>
-12월 29일 월요일 오전 10시 30분에 재오픈하겠습니다<br>
-기다리는동안 위 단톡에 오셔서 정보얻어주심 감사하겠습니다<br>
-단톡에 오지 않으셔도 해될건 없으니 월요일에 꼭 좀<br>
-다시 찾아와 주십쇼..<br>
-죄송합니다(__)<br>
-`;
+        가글로그인설명.innerHTML = `아이디는 한글만 가능합니다`;
+        //         가글로그인설명.innerHTML = `
+        // <a href="https://open.kakao.com/o/gbnmdWvh" target="_blank" style="color:#4FC1FF;">
+        // https://open.kakao.com/o/gbnmdWvh
+        // </a><br>
+        // 주인장의 실수로 데이터가 꼬여버렸습니다<br>
+        // 엎질러진 물, 코드 재정비좀 하고<br>
+        // 12월 29일 월요일 오전 10시 30분에 재오픈하겠습니다<br>
+        // 기다리는동안 위 단톡에 오셔서 정보얻어주심 감사하겠습니다<br>
+        // 단톡에 오지 않으셔도 해될건 없으니 월요일에 꼭 좀<br>
+        // 다시 찾아와 주십쇼..<br>
+        // 죄송합니다(__)<br>
+        // `;
 
-        // 인풋객체생성(가글로그인컨테이너, "가글아이디입력", "", "", "여백");
-        // 가글아이디입력.type = "text";
-        // 가글아이디입력.placeholder = "아이디 입력";
+        인풋객체생성(가글로그인컨테이너, "가글아이디입력", "", "", "여백");
+        가글아이디입력.type = "text";
+        가글아이디입력.placeholder = "아이디 입력";
 
-        // 인풋객체생성(가글로그인컨테이너, "가글비번입력", "", "", "여백");
-        // 가글비번입력.type = "password";
-        // 가글비번입력.placeholder = "비번 입력";
+        인풋객체생성(가글로그인컨테이너, "가글비번입력", "", "", "여백");
+        가글비번입력.type = "password";
+        가글비번입력.placeholder = "비번 입력";
 
-        // 객체생성(가글로그인컨테이너, "가글회원가입", "버튼", "테두리", "여백");
-        // 가글회원가입.innerHTML = `회원가입`;
-        // 객체생성(가글로그인컨테이너, "가글로그인", "버튼", "테두리", "여백");
-        // 가글로그인.innerHTML = `로그인`;
+        객체생성(가글로그인컨테이너, "가글회원가입", "버튼", "테두리", "여백");
+        가글회원가입.innerHTML = `회원가입`;
+        객체생성(가글로그인컨테이너, "가글로그인", "버튼", "테두리", "여백");
+        가글로그인.innerHTML = `로그인`;
 
-        // 가글아이디입력.addEventListener("input", () => {
-        //     const 원본 = 가글아이디입력.value;
-        //     const 한글만 = 원본.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
+        가글아이디입력.addEventListener("input", () => {
+            const 원본 = 가글아이디입력.value;
+            const 한글만 = 원본.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣]/g, "");
 
-        //     if (원본 !== 한글만) {
-        //         알림창표시("아이디는 한글만 가능합니다");
-        //         가글아이디입력.value = 한글만;
-        //     }
-        // });
+            if (원본 !== 한글만) {
+                알림창표시("아이디는 한글만 가능합니다");
+                가글아이디입력.value = 한글만;
+            }
+        });
 
-        // 가글비번입력.addEventListener("keydown", async (e) => {
-        //     // 엔터키
-        //     if (e.key === "Enter") {
-        //         가글로그인.click();
-        //     }
+        가글비번입력.addEventListener("keydown", async (e) => {
+            // 엔터키
+            if (e.key === "Enter") {
+                가글로그인.click();
+            }
 
-        //     // 스페이스바 (원하는 경우만)
-        //     if (e.key === " ") {    // 또는 e.code === "Space"
-        //         e.preventDefault(); // 스페이스 입력 막음
-        //         가글로그인.click();
-        //     }
-        // });
+            // 스페이스바 (원하는 경우만)
+            if (e.key === " ") {    // 또는 e.code === "Space"
+                e.preventDefault(); // 스페이스 입력 막음
+                가글로그인.click();
+            }
+        });
 
-        // //가글회원가입함수
-        // 가글회원가입.onclick = async () => {
-        //     try {
-        //         화면잠금(`회원가입중입니다`);
+        //가글회원가입함수
+        가글회원가입.onclick = async () => {
+            try {
+                화면잠금(`회원가입중입니다`);
 
-        //         const id값 = 가글아이디입력.value.trim();
-        //         const pw값 = 가글비번입력.value.trim();
+                const id값 = 가글아이디입력.value.trim();
+                const pw값 = 가글비번입력.value.trim();
 
-        //         if (!id값 || !pw값) {
-        //             알림창표시("아이디/비밀번호를 입력해주세요");
-        //             return;
-        //         }
+                if (!id값 || !pw값) {
+                    알림창표시("아이디/비밀번호를 입력해주세요");
+                    return;
+                }
 
-        //         // 한글만 허용
-        //         if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
-        //             알림창표시("아이디는 한글만 가능합니다");
-        //             return;
-        //         }
+                // 한글만 허용
+                if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
+                    알림창표시("아이디는 한글만 가능합니다");
+                    return;
+                }
 
-        //         const 응답 = await fetch("/rkrmf", {
-        //             method: "POST",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({
-        //                 액션: "가글회원가입",
-        //                 액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
-        //             })
-        //         });
+                const 응답 = await fetch("/rkrmf", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        액션: "가글회원가입",
+                        액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
+                    })
+                });
 
-        //         const 결과 = await 응답.json();
+                const 결과 = await 응답.json();
 
-        //         if (결과.성공) {
-        //             알림창표시("가글회원가입 완료!");
-
-
-        //         } else {
-        //             알림창표시(결과.오류);
-        //         }
+                if (결과.성공) {
+                    알림창표시("가글회원가입 완료!");
 
 
-        //     } catch (error) {
-        //         console.log(error);
-        //     } finally {
-        //         화면해제();
-        //     }
-        // };
-
-        // //가글로그인함수
-        // 가글로그인.onclick = async () => {
-        //     try {
-        //         화면잠금(`로그인중입니다`);
-
-        //         if (window.가글자동로그인) {
-        //             알림창표시(`자동로그인중입니다`);
-        //         }
+                } else {
+                    알림창표시(결과.오류);
+                }
 
 
-        //         const id값 = 가글아이디입력.value.trim();
-        //         const pw값 = 가글비번입력.value.trim();
+            } catch (error) {
+                console.log(error);
+            } finally {
+                화면해제();
+            }
+        };
 
-        //         if (!id값 || !pw값) {
-        //             알림창표시("아이디/비밀번호를 입력해주세요");
-        //             return;
-        //         }
+        //가글로그인함수
+        가글로그인.onclick = async () => {
+            try {
 
-        //         // 한글만 허용
-        //         if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
-        //             알림창표시("아이디는 한글만 가능합니다");
-        //             return;
-        //         }
+                const now = new Date();
 
-        //         const 응답 = await fetch("/rkrmf", {
-        //             method: "POST",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({
-        //                 액션: "가글로그인",
-        //                 액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
-        //             })
-        //         });
+                const 조건 =
+                    now.getMonth() === 11 &&
+                    now.getDate() === 29 &&
+                    now.getHours() === 10 &&
+                    now.getMinutes() === 30;
 
-        //         const 결과 = await 응답.json();
-
-        //         if (결과.성공) {
-        //             알림창표시("로그인되었습니다");
-
-        //             if (결과.업뎃했으니새고) {
-        //                 location.reload();
-        //             }
-        //             유저 = 결과.가글;
-        //             localStorage.setItem("lastGame", "가글");
-        //             localStorage.setItem("lastUser", JSON.stringify({ 아이디: id값, 비번: pw값 }));
-
-        //             화면목록[유저.스탯.화면번호]?.실행() || 화면목록[0].실행();
-
-        //             가글메뉴들.style.display = `flex`;
-
-        //             function 가글메뉴툴팁설정(버튼, 툴팁) {
-
-        //                 // 보여주기
-        //                 function show() {
-        //                     툴팁.style.display = "flex";
-
-        //                     const rect = 버튼.getBoundingClientRect();
-        //                     const tip = 툴팁.getBoundingClientRect();
-
-        //                     툴팁.style.left = (rect.right - tip.width) + "px";
-        //                     툴팁.style.top = (rect.bottom - 0) + "px";
-        //                 }
-
-        //                 // 숨기기
-        //                 function hide() {
-        //                     툴팁.style.display = "none";
-        //                 }
-
-        //                 // 버튼 위로 가면 열림
-        //                 버튼.addEventListener("mouseenter", () => {
-        //                     if (window.가글터치모드) return;
-        //                     show();
-        //                 });
-
-        //                 // 버튼에서 나갈 때
-        //                 버튼.addEventListener("mouseleave", async (e) => {
-        //                     if (window.가글터치모드) return;
-        //                     if (!툴팁.contains(e.relatedTarget)) hide();
-        //                 });
-
-        //                 // 툴팁에서 나갈 때
-        //                 툴팁.addEventListener("mouseleave", async (e) => {
-        //                     if (window.가글터치모드) return;
-        //                     if (!버튼.contains(e.relatedTarget)) hide();
-        //                 });
-        //             }
-
-        //             가글메뉴툴팁설정(가글정보, 가글정보툴팁);
-        //             가글메뉴툴팁설정(가글성장, 가글성장툴팁);
-        //             가글메뉴툴팁설정(가글월드, 가글월드툴팁);
-
-        //             window.마신방어1위 = 결과.마신방어1위;
-        //             window.마신방어2위 = 결과.마신방어2위;
-        //             window.마신방어3위 = 결과.마신방어3위;
-
-        //             게임이름.innerHTML = 유저.스탯.닉네임;
-        //             if (마신방어1위.스탯.닉네임 === 유저.스탯.닉네임) {
-        //                 게임이름.style.className = `마법의팔레트1위`;
-        //             } else if (마신방어2위.스탯.닉네임 === 유저.스탯.닉네임) {
-        //                 게임이름.style.className = `마법의팔레트2위`;
-
-        //             } else if (마신방어3위.스탯.닉네임 === 유저.스탯.닉네임) {
-        //                 게임이름.style.className = `마법의팔레트3위`;
-
-        //             }
+                if (!조건) {
+                    알림창표시(`12월 29일 월요일 오전 10시 30분에 오픈됩니다`);
+                    return;
+                }
 
 
-        //             if (유저.스탯.주인장) {
-        //                 가글주인장.style.display = `flex`;
-        //             }
+                화면잠금(`로그인중입니다`);
 
-        //             서브 = 결과.가글서브;
-
-        //             // if (서브.스탯.) {
-        //             //     // setInterval(() => {
-        //             //     //     황금표시(`현재 버그발생`);
-        //             //     // }, 30000);
-        //             // }
-
-        //         } else {
-        //             알림창표시(결과.오류);
-        //         }
-
-        //     } catch (error) {
-        //         console.log(error);
-        //     } finally {
-        //         화면해제();
-        //         if (서브) {
-        //             if (서브.스탯.차단) {
-        //                 화면차단기.style.display = `flex`;
-        //                 화면차단기.style.opacity = "1";
-        //                 화면차단기.innerHTML = `차단되었습니다`;
-        //             } else if (서브.스탯.점검) {
-        //                 화면차단기.style.display = `flex`;
-        //                 화면차단기.style.opacity = "1";
-        //                 화면차단기.innerHTML = `점검중 >.<`;
-        //             }
-
-        //         }
+                if (window.가글자동로그인) {
+                    알림창표시(`자동로그인중입니다`);
+                }
 
 
-        //     }
-        // };
+                const id값 = 가글아이디입력.value.trim();
+                const pw값 = 가글비번입력.value.trim();
+
+                if (!id값 || !pw값) {
+                    알림창표시("아이디/비밀번호를 입력해주세요");
+                    return;
+                }
+
+                // 한글만 허용
+                if (!/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/.test(id값)) {
+                    알림창표시("아이디는 한글만 가능합니다");
+                    return;
+                }
+
+                const 응답 = await fetch("/rkrmf", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        액션: "가글로그인",
+                        액션데이터: { 아이디: id값, 비번: pw값, 서버: 1 }
+                    })
+                });
+
+                const 결과 = await 응답.json();
+
+                if (결과.성공) {
+                    알림창표시("로그인되었습니다");
+
+                    if (결과.업뎃했으니새고) {
+                        location.reload();
+                    }
+                    유저 = 결과.가글;
+                    localStorage.setItem("lastGame", "가글");
+                    localStorage.setItem("lastUser", JSON.stringify({ 아이디: id값, 비번: pw값 }));
+
+                    화면목록[유저.스탯.화면번호]?.실행() || 화면목록[0].실행();
+
+                    가글메뉴들.style.display = `flex`;
+
+                    function 가글메뉴툴팁설정(버튼, 툴팁) {
+
+                        // 보여주기
+                        function show() {
+                            툴팁.style.display = "flex";
+
+                            const rect = 버튼.getBoundingClientRect();
+                            const tip = 툴팁.getBoundingClientRect();
+
+                            툴팁.style.left = (rect.right - tip.width) + "px";
+                            툴팁.style.top = (rect.bottom - 0) + "px";
+                        }
+
+                        // 숨기기
+                        function hide() {
+                            툴팁.style.display = "none";
+                        }
+
+                        // 버튼 위로 가면 열림
+                        버튼.addEventListener("mouseenter", () => {
+                            if (window.가글터치모드) return;
+                            show();
+                        });
+
+                        // 버튼에서 나갈 때
+                        버튼.addEventListener("mouseleave", async (e) => {
+                            if (window.가글터치모드) return;
+                            if (!툴팁.contains(e.relatedTarget)) hide();
+                        });
+
+                        // 툴팁에서 나갈 때
+                        툴팁.addEventListener("mouseleave", async (e) => {
+                            if (window.가글터치모드) return;
+                            if (!버튼.contains(e.relatedTarget)) hide();
+                        });
+                    }
+
+                    가글메뉴툴팁설정(가글정보, 가글정보툴팁);
+                    가글메뉴툴팁설정(가글성장, 가글성장툴팁);
+                    가글메뉴툴팁설정(가글월드, 가글월드툴팁);
+
+                    window.마신방어1위 = 결과.마신방어1위;
+                    window.마신방어2위 = 결과.마신방어2위;
+                    window.마신방어3위 = 결과.마신방어3위;
+
+                    게임이름.innerHTML = 유저.스탯.닉네임;
+                    if (마신방어1위?.스탯.닉네임 === 유저.스탯.닉네임) {
+                        게임이름.className = "마법의팔레트1위";
+                    } else if (마신방어2위?.스탯.닉네임 === 유저.스탯.닉네임) {
+                        게임이름.className = "마법의팔레트2위";
+                    } else if (마신방어3위?.스탯.닉네임 === 유저.스탯.닉네임) {
+                        게임이름.className = "마법의팔레트3위";
+                    }
+
+                    if (유저.스탯.주인장) {
+                        가글주인장.style.display = `flex`;
+                    }
+
+                    서브 = 결과.가글서브;
+
+                    // if (서브.스탯.) {
+                    //     // setInterval(() => {
+                    //     //     황금표시(`현재 버그발생`);
+                    //     // }, 30000);
+                    // }
+
+                } else {
+                    알림창표시(결과.오류);
+                    localStorage.removeItem("lastGame");
+                    localStorage.removeItem("lastUser");
+
+                }
+
+            } catch (error) {
+                console.log(error);
+            } finally {
+                화면해제();
+                if (서브) {
+                    if (서브.스탯.차단) {
+                        화면차단기.style.display = `flex`;
+                        화면차단기.style.opacity = "1";
+                        화면차단기.innerHTML = `차단되었습니다`;
+                    } else if (서브.스탯.점검) {
+                        화면차단기.style.display = `flex`;
+                        화면차단기.style.opacity = "1";
+                        화면차단기.innerHTML = `점검중 >.<`;
+                    }
+
+                }
+
+
+            }
+        };
 
     } catch (error) {
         console.log(error);
@@ -935,12 +956,29 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", "여백");
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.2.0`;
+        가글패치노트설명.innerHTML = `v0.2.1`;
 
         //패치노트작성
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", "여백");
         가글패치노트들.innerHTML =
             `
+        <br>
+        25.12.29<br>
+        서버 재오픈<br>
+        전투화면 유저 스탯박스에 속력 표시가 추가되었습니다<br>
+
+        <br>
+        25.12.27<br>
+        장비 승급 필요숙련도 2배수 ➡ 3배수로 변경<br>
+        재앙맵 등장확률 3% ➡ 1%로 변경<br>
+        유물 투자 ➡ 랜덤드랍으로 변경<br>
+        유물 등급당 증가수치 +0.n 등차 ➡ ×3으로 변경<br>
+
+        <br>
+        25.12.26<br>
+        오후 9시 12분 경 주인장 실수로..<br>
+        ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ데이터 소멸ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ<br>
+                       
         <br>
         25.12.26<br>
         스킬. 과열의 조건이 스킬레벨×5 ➡ 스킬레벨×2 로<br>
@@ -1259,9 +1297,11 @@ async function 가글전투화면() {
         객체생성(유저공방체, "유저공", "", "", "", "", "오른쪽");
         객체생성(유저공방체, "유저방", "", "", "", "", "오른쪽");
         객체생성(유저공방체, "유저체", "", "", "", "", "오른쪽");
+        객체생성(유저공방체, "유저속", "", "", "", "", "오른쪽");
         유저공.innerHTML = `공격력 ` + 숫자한글(유저.스탯.최종공격력);
         유저방.innerHTML = `방어력 ` + 숫자한글(유저.스탯.최종방어력);
         유저체.innerHTML = `체력 ${숫자한글(유저.스탯.현재체력)}/${숫자한글(유저.스탯.최종체력)}`;
+        유저속.innerHTML = `속력 ${숫자한글(유저.스탯.최종속력)}`;
 
         악마성.onclick = async () => {
             try {
@@ -1558,6 +1598,7 @@ async function 가글설정화면() {
                         알림창표시("닉네임이 변경되었습니다");
 
                         유저 = 결과.가글;
+                        서브 = 결과.가글서브;
 
                         게임이름.innerHTML = 유저.스탯.닉네임;
 
@@ -2445,6 +2486,10 @@ async function 가글메뉴얼화면() {
         객체생성(가글메뉴얼컨테이너, "메뉴얼모음", "", "", "여백");
         메뉴얼모음.innerHTML = `
         <br>
+        버전 업데이트 시 주인장이 우편을 보냅니다<br>
+        설정에서 시작화면을 우편함 화면으로 해놓으시면<br>
+        우편물 확인으로 버전 업데이트를 빠르게 확인할 수 있습니다<br>
+        <br>
         스태미너는 정시마다 120씩 회복됩니다<br>
         스태미너는 최대스태미너를 초과하여 회복되지 않습니다<br>
         <br>
@@ -2556,7 +2601,7 @@ async function 가글장비화면() {
         보유숙.innerHTML = `현재숙련도 ${숫자한글(유저.스탯.현재숙련도)}`;
 
         // 객체생성(보유숙필요숙, "다음숙", "왼쪽", "", "여백");
-        // 다음숙.innerHTML = `필요숙련도 ${숫자한글(1000 * (2 ** (유저.스탯.무기.등급 - 1)))}`;
+        // 다음숙.innerHTML = `필요숙련도 ${숫자한글(1000 * (3 ** (유저.스탯.무기.등급 - 1)))}`;
 
         객체생성(보유숙보유골, "보유골", "플렉스일", "오른쪽", "여백");
         보유골.innerHTML = `보유Gold ${숫자한글(유저.스탯.현재골드)}`;
@@ -2589,7 +2634,7 @@ async function 가글장비화면() {
         객체생성(무기승급과리롤, "무기승급", "여백", "버튼", "테두리", "");
         무기승급.innerHTML = `
         무기승급<br>
-        (숙련도${숫자한글(1000 * (2 ** (유저.스탯.무기.등급 - 1)))})<br>
+        (숙련도${숫자한글(1000 * (3 ** (유저.스탯.무기.등급 - 1)))})<br>
         `;
 
         무기승급.onclick = async () => {
@@ -2601,8 +2646,8 @@ async function 가글장비화면() {
                     return;
 
                 }
-                if (유저.스탯.현재숙련도 < 1000 * (2 ** (유저.스탯.무기.등급 - 1))) {
-                    알림창표시(`다음 필요숙련도는 ${숫자한글(1000 * (2 ** (유저.스탯.무기.등급 - 1)))}입니다`);
+                if (유저.스탯.현재숙련도 < 1000 * (3 ** (유저.스탯.무기.등급 - 1))) {
+                    알림창표시(`숙련도가 부족합니다`);
                     return;
                 }
 
@@ -2701,7 +2746,7 @@ async function 가글장비화면() {
         객체생성(방어구승급과리롤, "방어구승급", "여백", "버튼", "테두리", "");
         방어구승급.innerHTML = `
         방어구승급<br>
-        (숙련도${숫자한글(1000 * (2 ** (유저.스탯.방어구.등급 - 1)))})<br>
+        (숙련도${숫자한글(1000 * (3 ** (유저.스탯.방어구.등급 - 1)))})<br>
         `;
 
         방어구승급.onclick = async () => {
@@ -2713,8 +2758,8 @@ async function 가글장비화면() {
                     return;
 
                 }
-                if (유저.스탯.현재숙련도 < 1000 * (2 ** (유저.스탯.방어구.등급 - 1))) {
-                    알림창표시(`다음 필요숙련도는 ${숫자한글(1000 * (2 ** (유저.스탯.방어구.등급 - 1)))}입니다`);
+                if (유저.스탯.현재숙련도 < 1000 * (3 ** (유저.스탯.방어구.등급 - 1))) {
+                    알림창표시(`숙련도가 부족합니다`);
                     return;
                 }
 
@@ -2814,7 +2859,7 @@ async function 가글장비화면() {
         객체생성(장신구승급과리롤, "장신구승급", "여백", "버튼", "테두리", "");
         장신구승급.innerHTML = `
         장신구승급<br>
-        (숙련도${숫자한글(1000 * (2 ** (유저.스탯.장신구.등급 - 1)))})<br>
+        (숙련도${숫자한글(1000 * (3 ** (유저.스탯.장신구.등급 - 1)))})<br>
         `;
 
         장신구승급.onclick = async () => {
@@ -2826,8 +2871,8 @@ async function 가글장비화면() {
                     return;
 
                 }
-                if (유저.스탯.현재숙련도 < 1000 * (2 ** (유저.스탯.장신구.등급 - 1))) {
-                    알림창표시(`다음 필요숙련도는 ${숫자한글(1000 * (2 ** (유저.스탯.장신구.등급 - 1)))}입니다`);
+                if (유저.스탯.현재숙련도 < 1000 * (3 ** (유저.스탯.장신구.등급 - 1))) {
+                    알림창표시(`숙련도가 부족합니다`);
                     return;
                 }
 
@@ -2928,7 +2973,7 @@ async function 가글장비화면() {
         객체생성(날개승급과리롤, "날개승급", "여백", "버튼", "테두리", "");
         날개승급.innerHTML = `
         날개승급<br>
-        (숙련도${숫자한글(1000 * (2 ** (유저.스탯.날개.등급 - 1)))})<br>
+        (숙련도${숫자한글(1000 * (3 ** (유저.스탯.날개.등급 - 1)))})<br>
         `;
 
         날개승급.onclick = async () => {
@@ -2940,8 +2985,8 @@ async function 가글장비화면() {
                     return;
 
                 }
-                if (유저.스탯.현재숙련도 < 1000 * (2 ** (유저.스탯.날개.등급 - 1))) {
-                    알림창표시(`다음 필요숙련도는 ${숫자한글(1000 * (2 ** (유저.스탯.날개.등급 - 1)))}입니다`);
+                if (유저.스탯.현재숙련도 < 1000 * (3 ** (유저.스탯.날개.등급 - 1))) {
+                    알림창표시(`숙련도가 부족합니다`);
                     return;
                 }
 
@@ -3234,11 +3279,12 @@ async function 가글전당화면() {
 
                             객체생성(미니정보창컨테이너, `미니삼행`, `양쪽`, ``, `밑줄`);
                             객체생성(미니삼행, `미니삼행일`, ``, `여백`, `플렉스일`);
-                            미니삼행일.innerHTML = `공격력보너스<br>+${유저들.유물공격력보너스}%`;
+                            미니삼행일.innerHTML = `공격력보너스<br>+${(Object.entries(유저들.유물).reduce((합, [등급, 값]) => 합 + ((값[0] || 0) * 삼배수[등급]), 0).toFixed(1))}%`;
+
                             객체생성(미니삼행, `미니삼행이`, ``, `여백`, `플렉스일`);
-                            미니삼행이.innerHTML = `방어력보너스<br>+${유저들.유물방어력보너스}%`;
+                            미니삼행이.innerHTML = `방어력보너스<br>+${(Object.entries(유저들.유물).reduce((합, [등급, 값]) => 합 + ((값[1] || 0) * 삼배수[등급]), 0).toFixed(1))}%`;
                             객체생성(미니삼행, `미니삼행삼`, ``, `여백`, `플렉스일`);
-                            미니삼행삼.innerHTML = `체력보너스<br>+${유저들.유물체력보너스}%`;
+                            미니삼행삼.innerHTML = `체력보너스<br>+${(Object.entries(유저들.유물).reduce((합, [등급, 값]) => 합 + ((값[2] || 0) * 삼배수[등급]), 0).toFixed(1))}%`;
 
 
 
@@ -3362,304 +3408,97 @@ async function 가글유물화면() {
 
         객체생성(가글유물컨테이너, "가글유물설명", "가로꽉", "밑줄", "여백");
         가글유물설명.innerHTML = `
-        보유한 유물로 원하는 보너스스탯을 얻을 수 있습니다<br>
-        한글은 해당스탯을 1회, A는 모든유물을 흡수합니다<br>
-        유물초기화에는 스태미너(1)가 소모됩니다
+        드랍된 유물은 공 방 체 중 랜덤한 스탯값을 상승시켜줍니다<br>
         `;
 
-        객체생성(가글유물컨테이너, `보유유물총량`, "", "", "", "여백");
-        보유유물총량.innerHTML = `유물총량<br>일반:${유저.스탯.유물총량[1]} 레어:${유저.스탯.유물총량[2]} 신화:${유저.스탯.유물총량[3]} 고대:${유저.스탯.유물총량[4]} 태초:${유저.스탯.유물총량[5]}<br>타락:${유저.스탯.유물총량[6]} 진화:${유저.스탯.유물총량[7]} 멸망:${유저.스탯.유물총량[8]} 공허:${유저.스탯.유물총량[9]} `;
-        객체생성(가글유물컨테이너, `유물초기화`, "버튼", "테두리", "", "여백");
-        유물초기화.innerHTML = `유물초기화`;
-        유물초기화.onclick = async () => {
-            try {
-                화면잠금(`유물을 초기화중입니다`);
+        // 객체생성(가글유물컨테이너, `보유유물총량`, "", "", "", "여백");
+        // 보유유물총량.innerHTML = `유물총량<br>일반:${유저.스탯.유물총량[1]} 레어:${유저.스탯.유물총량[2]} 신화:${유저.스탯.유물총량[3]} 고대:${유저.스탯.유물총량[4]} 태초:${유저.스탯.유물총량[5]}<br>타락:${유저.스탯.유물총량[6]} 진화:${유저.스탯.유물총량[7]} 멸망:${유저.스탯.유물총량[8]} 공허:${유저.스탯.유물총량[9]} `;
+        // 객체생성(가글유물컨테이너, `유물초기화`, "버튼", "테두리", "", "여백");
+        // 유물초기화.innerHTML = `유물초기화`;
+        // 유물초기화.onclick = async () => {
+        //     try {
+        //         화면잠금(`유물을 초기화중입니다`);
 
-                if (!유저.스탯.현재스태미너) {
-                    알림창표시("스태미너가 부족합니다");
-                    return;
-                }
+        //         if (!유저.스탯.현재스태미너) {
+        //             알림창표시("스태미너가 부족합니다");
+        //             return;
+        //         }
 
-                if (Object.values(유저.스탯.유물총량).reduce((a, b) => a + b, 0) === 0) {
-                    알림창표시(`회수할 유물이 없습니다`);
-                    return;
-                }
+        //         if (Object.values(유저.스탯.유물총량).reduce((a, b) => a + b, 0) === 0) {
+        //             알림창표시(`회수할 유물이 없습니다`);
+        //             return;
+        //         }
 
-                if (Object.values(유저.스탯.유물총량).reduce((a, b) => a + b, 0) === Object.values(유저.스탯.유물).reduce((a, b) => a + b, 0)) {
-                    알림창표시(`회수할 유물이 없습니다`);
-                    return;
-                }
+        //         if (Object.values(유저.스탯.유물총량).reduce((a, b) => a + b, 0) === Object.values(유저.스탯.유물).reduce((a, b) => a + b, 0)) {
+        //             알림창표시(`회수할 유물이 없습니다`);
+        //             return;
+        //         }
 
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "유물초기화",
-                        액션데이터: { 유저id: 유저.id, }
-                    })
-                });
+        //         const 응답 = await fetch("/rkrmf", {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({
+        //                 액션: "유물초기화",
+        //                 액션데이터: { 유저id: 유저.id, }
+        //             })
+        //         });
 
-                const 결과 = await 응답.json();
+        //         const 결과 = await 응답.json();
 
-                if (결과.성공) {
+        //         if (결과.성공) {
 
-                    유저 = 결과.가글;
+        //             유저 = 결과.가글;
 
-                    가글유물화면();
+        //             가글유물화면();
 
-                    알림창표시("유물을 초기화했습니다");
+        //             알림창표시("유물을 초기화했습니다");
 
-                } else {
-                    알림창표시(결과.오류);
-                }
+        //         } else {
+        //             알림창표시(결과.오류);
+        //         }
 
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
+        //     } catch (error) {
+        //         console.log(error);
+        //     } finally {
+        //         화면해제();
+        //     }
+        // };
 
-        객체생성(가글유물컨테이너, `보너스스탯`, "테두리", "", "가로꽉", "");
+        객체생성(가글유물컨테이너, `보너스스탯`, "", "", "가로꽉", "밑줄");
         객체생성(보너스스탯, `유물공보너스`, "", "", "플렉스일", "여백");
-        유물공보너스.innerHTML = `공격력보너스<br>+${유저.스탯.유물공격력보너스}%`;
+        유물공보너스.innerHTML = `공격력보너스<br>+${(Object.entries(유저.스탯.유물).reduce((합, [등급, 값]) => 합 + ((값[0] || 0) * 삼배수[등급]), 0)).toFixed(1)}%`;
         객체생성(보너스스탯, `유물방보너스`, "", "", "플렉스일", "여백");
-        유물방보너스.innerHTML = `방어력보너스<br>+${유저.스탯.유물방어력보너스}%`;
+        유물방보너스.innerHTML = `방어력보너스<br>+${(Object.entries(유저.스탯.유물).reduce((합, [등급, 값]) => 합 + ((값[1] || 0) * 삼배수[등급]), 0)).toFixed(1)}%`;
         객체생성(보너스스탯, `유물체보너스`, "", "", "플렉스일", "여백");
-        유물체보너스.innerHTML = `체력보너스<br>+${유저.스탯.유물체력보너스}%`;
+        유물체보너스.innerHTML = `체력보너스<br>+${(Object.entries(유저.스탯.유물).reduce((합, [등급, 값]) => 합 + ((값[2] || 0) * 삼배수[등급]), 0)).toFixed(1)}%`;
 
 
         const 모든유물 = 유저.스탯.유물;
         let 유물보유유무 = 0;
-        for (const i in 모든유물) {
+        for (const i in 유저.스탯.유물총량) {
 
-            if (모든유물[i]) {
+            if (유저.스탯.유물총량[i]) {
                 유물보유유무++;
                 객체생성(가글유물컨테이너, `${i}유물모음`, "테두리", "세로", "가로꽉", "여백");
                 객체생성(window[`${i}유물모음`], `${i}유물첫줄`, "양쪽", "밑줄", "");
-                객체생성(window[`${i}유물첫줄`], `${i}유물이름`, "왼쪽", "", "여백");
-                window[`${i}유물이름`].innerHTML = `[${등급[i].이름}] ${유물모음[i].이름} × ${유저.스탯.유물[i]}`;
+                객체생성(window[`${i}유물첫줄`], `${i}유물이름`, "", "", "여백");
+                window[`${i}유물이름`].innerHTML = `[${등급[i].이름}] ${유물모음[i].이름} × ${유저.스탯.유물총량[i]}`;
                 window[`${i}유물이름`].style.color = 색상맵[등급[i].색상];
 
-                객체생성(window[`${i}유물첫줄`], `${i}유물공방체`, "오른쪽", "", "");
-
-                객체생성(window[`${i}유물공방체`], `${i}유물공일올`, "", "테두리", "외부");
-                객체생성(window[`${i}유물공일올`], `${i}유물공일`, "버튼", "", "내부");
-                window[`${i}유물공일`].innerHTML = `공`;
-                window[`${i}유물공일`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물공보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 공올: 0 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("공격력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
-                객체생성(window[`${i}유물공일올`], `${i}유물공올`, "버튼", "", "내부");
-                window[`${i}유물공올`].innerHTML = `A`;
-                window[`${i}유물공올`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물공보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 공올: 1 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("공격력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
-
-                객체생성(window[`${i}유물공방체`], `${i}유물방일올`, "", "테두리", "외부");
-                객체생성(window[`${i}유물방일올`], `${i}유물방일`, "버튼", "", "내부");
-                window[`${i}유물방일`].innerHTML = `방`;
-                window[`${i}유물방일`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물방보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 방올: 0 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("방어력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
-                객체생성(window[`${i}유물방일올`], `${i}유물방올`, "버튼", "", "내부");
-                window[`${i}유물방올`].innerHTML = `A`;
-                window[`${i}유물방올`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물방보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 방올: 1 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("방어력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
-
-                객체생성(window[`${i}유물공방체`], `${i}유물체일올`, "", "테두리", "외부");
-                객체생성(window[`${i}유물체일올`], `${i}유물체일`, "버튼", "", "내부");
-                window[`${i}유물체일`].innerHTML = `체`;
-                window[`${i}유물체일`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물체보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 체올: 0 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("체력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
-                객체생성(window[`${i}유물체일올`], `${i}유물체올`, "버튼", "", "내부");
-                window[`${i}유물체올`].innerHTML = `A`;
-                window[`${i}유물체올`].onclick = async () => {
-                    try {
-                        화면잠금(`유물을 흡수중입니다`);
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "유물체보너스",
-                                액션데이터: { 유저id: 유저.id, i: +i, 체올: 1 }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글유물화면();
-
-                            알림창표시("체력 보너스가 증가했습니다");
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
+                객체생성(window[`${i}유물첫줄`], `${i}유물효과`, "", "", "여백");
+                window[`${i}유물효과`].innerHTML = `${유물모음[i].설명}`;
 
 
-                객체생성(window[`${i}유물모음`], `${i}유물설명`, "오른쪽", "", "여백");
-                window[`${i}유물설명`].innerHTML = `${유물모음[i].설명}`;
+                객체생성(window[`${i}유물모음`], `${i}유물둣줄`, "양쪽", "", "");
+                객체생성(window[`${i}유물둣줄`], `${i}유물공`, "", "", "여백");
+                window[`${i}유물공`].innerHTML = `공(${모든유물[i][0]}) +${(모든유물[i][0] * 삼배수[i]).toFixed(1)}%`;
+                객체생성(window[`${i}유물둣줄`], `${i}유물방`, "", "", "여백");
+                window[`${i}유물방`].innerHTML =
+                    `방(${모든유물[i][1]}) +${(모든유물[i][1] * 삼배수[i]).toFixed(1)}%`;
+                객체생성(window[`${i}유물둣줄`], `${i}유물체`, "", "", "여백");
+                window[`${i}유물체`].innerHTML = `체(${모든유물[i][2]}) +${(모든유물[i][2] * 삼배수[i]).toFixed(1)}%`;
+
+
 
             }
         }
@@ -3710,54 +3549,54 @@ async function 가글스킬화면() {
         객체생성(스킬포인트초기화, "남은스포", "", "", "여백");
         남은스포.innerHTML = `스킬포인트 : ${유저.스탯.스킬포인트}`;
 
-        객체생성(스킬포인트초기화, "스킬초기화", "테두리", "버튼", "여백");
-        스킬초기화.innerHTML = `스킬초기화`;
+        // 객체생성(스킬포인트초기화, "스킬초기화", "테두리", "버튼", "여백");
+        // 스킬초기화.innerHTML = `스킬초기화`;
 
 
-        스킬초기화.onclick = async () => {
-            //총합
-            if (Object.values(유저.스탯.스킬[유저.스탯.프리셋]).reduce((a, b) => a + b, 0) === 0) {
-                알림창표시(`회수할 스킬이 없습니다`);
-                return;
-            }
+        // 스킬초기화.onclick = async () => {
+        //     //총합
+        //     if (Object.values(유저.스탯.스킬[유저.스탯.프리셋]).reduce((a, b) => a + b, 0) === 0) {
+        //         알림창표시(`회수할 스킬이 없습니다`);
+        //         return;
+        //     }
 
-            if (!유저.스탯.현재스태미너) {
-                알림창표시("스태미너가 부족합니다");
-                return;
-            }
+        //     if (!유저.스탯.현재스태미너) {
+        //         알림창표시("스태미너가 부족합니다");
+        //         return;
+        //     }
 
-            try {
-                화면잠금();
+        //     try {
+        //         화면잠금();
 
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "스킬초기화",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
+        //         const 응답 = await fetch("/rkrmf", {
+        //             method: "POST",
+        //             headers: { "Content-Type": "application/json" },
+        //             body: JSON.stringify({
+        //                 액션: "스킬초기화",
+        //                 액션데이터: { 유저id: 유저.id }
+        //             })
+        //         });
 
-                const 결과 = await 응답.json();
+        //         const 결과 = await 응답.json();
 
-                if (결과.성공) {
+        //         if (결과.성공) {
 
-                    유저 = 결과.가글;
+        //             유저 = 결과.가글;
 
-                    가글스킬화면();
+        //             가글스킬화면();
 
-                    알림창표시("모든스킬이 초기화되었습니다");
+        //             알림창표시("모든스킬이 초기화되었습니다");
 
-                } else {
-                    알림창표시(결과.오류);
-                }
+        //         } else {
+        //             알림창표시(결과.오류);
+        //         }
 
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
+        //     } catch (error) {
+        //         console.log(error);
+        //     } finally {
+        //         화면해제();
+        //     }
+        // };
 
 
 
@@ -3895,7 +3734,7 @@ async function 가글마신전화면() {
         객체생성(가글마신전컨테이너, "가글마신전설명", "가로꽉", "밑줄", "여백");
         가글마신전설명.innerHTML = `
         스태미너(1)를 소모하여 마신에게 도전 또는 숭배할 수 있습니다<br>
-        방어와 숭배의 효과는 아직 구현되지 않았습니다<br>
+        방어 순위에 따라 닉네임에 마법의팔레트 효과가 적용됩니다<br>
         
         `;
 
@@ -4338,12 +4177,12 @@ async function 가글광장화면() {
                         `${항목.스탯.년월} ${항목.스탯.시각}`;
 
 
-                    if (마신방어1위.스탯.닉네임 === 항목.스탯.닉넴) {
+                    if (마신방어1위?.스탯.닉네임 === 항목.스탯.닉넴) {
                         window[`광장${광장id}이름`].className = `마법의팔레트1위`;
-                    } else if (마신방어2위.스탯.닉네임 === 항목.스탯.닉넴) {
+                    } else if (마신방어2위?.스탯.닉네임 === 항목.스탯.닉넴) {
                         window[`광장${광장id}이름`].className = `마법의팔레트2위`;
 
-                    } else if (마신방어3위.스탯.닉네임 === 항목.스탯.닉넴) {
+                    } else if (마신방어3위?.스탯.닉네임 === 항목.스탯.닉넴) {
                         window[`광장${광장id}이름`].className = `마법의팔레트3위`;
 
                     }
@@ -4564,9 +4403,10 @@ async function 가글영혼화면() {
         스탯을 감소시킵니다<br>
         `;
 
-
+        window.흡수영혼 = 0;
         for (const a in 유저.스탯.영혼) {
             if (유저.스탯.영혼[a]) {
+                흡수영혼++;
                 객체생성(가글영혼컨테이너, `영혼박스${a}`, "가로꽉", "세로", "테두리", "여백");
 
                 객체생성(window[`영혼박스${a}`], `영혼수량${a}`, "밑줄", "왼쪽", "여백");
@@ -4580,6 +4420,11 @@ async function 가글영혼화면() {
 
         }
 
+        if (!흡수영혼) {
+            객체생성(가글영혼컨테이너, `흡수영혼없음`, "가로꽉", "세로", "테두리", "여백");
+            흡수영혼없음.innerHTML = `흡수된 영혼이 없습니다..`;
+
+        }
 
 
 
@@ -4602,6 +4447,40 @@ async function 가글영혼화면() {
     }
 };
 
+객체생성(document.body, "가글버프컨테이너", "사백", "테두리", "세로", "내부", "숨기기");
+
+//가글버프화면함수
+async function 가글버프화면() {
+    try {
+        화면잠금(``);
+        가글화면전환(가글버프컨테이너);
+
+        가글버프컨테이너.innerHTML = ``;
+
+        객체생성(가글버프컨테이너, "가글버프설명", "가로꽉", "밑줄", "여백");
+        가글버프설명.innerHTML = `
+        구현중입니다<br>
+        `;
+
+
+    } catch (error) {
+
+    } finally {
+        화면해제();
+    }
+}
+
+가글버프.onclick = async () => {
+    try {
+        if (가글버프컨테이너.style.display === "none") {
+            가글버프화면();
+        }
+    } catch (error) {
+
+    } finally {
+        화면해제();
+    }
+};
 
 //시작화면
 const 화면목록 = [
@@ -4618,6 +4497,7 @@ const 화면목록 = [
     { 이름: "광장", 실행: 가글광장화면 },
     { 이름: "우편함", 실행: 가글우편함화면 },
     { 이름: "영혼", 실행: 가글영혼화면 },
+    { 이름: "버프", 실행: 가글버프화면 },
 ];
 
 //가글화면전환함수 화면추가
@@ -4642,6 +4522,7 @@ function 가글화면전환(화면이름) {
         가글광장컨테이너,
         가글우편함컨테이너,
         가글영혼컨테이너,
+        가글버프컨테이너,
     ];
 
     for (let el of 화면들) {
@@ -4753,6 +4634,11 @@ document.addEventListener("keydown", async function (e) {
             case "g":
                 if (가글영혼컨테이너.style.display === "none") {
                     가글영혼.onclick();
+                }
+                break;
+            case "h":
+                if (가글버프컨테이너.style.display === "none") {
+                    가글버프.onclick();
                 }
                 break;
         }
