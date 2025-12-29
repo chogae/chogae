@@ -163,17 +163,17 @@ app.post("/rkrmf", async (req, res) => {
 
             return res.json({ 성공: true });
         } else if (액션 === "가글로그인") {
-            const now = new Date();
+            // const now = new Date();
 
-            const 조건 =
-                now.getMonth() === 11 &&   // 12월 (0부터 시작)
-                now.getDate() === 29 &&
-                now.getHours() === 10 &&
-                now.getMinutes() === 30;
+            // const 조건 =
+            //     now.getMonth() === 11 &&   // 12월 (0부터 시작)
+            //     now.getDate() === 29 &&
+            //     now.getHours() === 10 &&
+            //     now.getMinutes() === 30;
 
-            if (!조건) {
-                // return res.json({ 성공: false, 오류: "실패" });
-            }
+            // if (!조건) {
+            //     // return res.json({ 성공: false, 오류: "실패" });
+            // }
 
 
             const { 아이디, 비번 } = 액션데이터;
