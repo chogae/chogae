@@ -1586,27 +1586,67 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "유저 id 부족" });
             }
 
-            const { data: 마신서브 } = await supabase
+            // const { data: 마신서브 } = await supabase
+            //     .from("가글서브")
+            //     .select("*")
+            //     .order("스탯->마신->포인트", { ascending: false })
+            //     .limit(1);
+
+            // if (!마신서브[0]) {
+            //     return res.json({ 성공: false, 오류: "실패" });
+            // }
+
+            // const { data: 마신 } = await supabase
+            //     .from("가글")
+            //     .select("*")
+            //     .eq("id", 마신서브[0].id)
+            //     .maybeSingle();
+
+            // if (!마신) {
+            //     return res.json({ 성공: false, 오류: "실패" });
+            // }
+
+
+
+            const { data: 마신서브목록 } = await supabase
                 .from("가글서브")
                 .select("*")
                 .order("스탯->마신->포인트", { ascending: false })
-                .limit(1);
+                .limit(20)
 
-            if (!마신서브[0]) {
-                return res.json({ 성공: false, 오류: "실패" });
+            if (!마신서브목록 || 마신서브목록.length === 0) {
+                return res.json({ 성공: false, 오류: "마신 후보 없음" });
             }
 
-            const { data: 마신 } = await supabase
-                .from("가글")
-                .select("*")
-                .eq("id", 마신서브[0].id)
-                .maybeSingle();
+            let 마신 = null;
+            let 마신서브 = null;
 
-            if (!마신) {
-                return res.json({ 성공: false, 오류: "실패" });
+            for (const 후보 of 마신서브목록) {
+                const { data } = await supabase
+                    .from("가글")
+                    .select("*")
+                    .eq("id", 후보.id)
+                    .maybeSingle();
+
+                if (!data) continue;
+                if (!data.스탯) continue;
+                if (!data.스탯.전투력) continue;
+
+                마신 = data;
+                마신서브 = 후보;
+                break;
             }
 
-            res.json({ 성공: true, 마신: 마신.스탯, 마신서브: 마신서브[0].스탯 });
+            if (!마신 || !마신서브) {
+                return res.json({ 성공: false, 오류: "유효한 마신 없음" });
+            }
+
+            res.json({
+                성공: true,
+                마신: 마신.스탯,
+                마신서브: 마신서브.스탯
+            });
+
         } else if (액션 === "마신도전") {
             const { 유저id, } = 액션데이터;
 
@@ -2189,6 +2229,36 @@ app.post("/rkrmf", async (req, res) => {
             }
 
 
+
+            res.json({ 성공: true, data });
+        } else if (액션 === "버프리롤") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+
+            data.스탯 = 유저스탯계산(data.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: data.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
 
             res.json({ 성공: true, data });
         } else if (액션 === "") {
