@@ -445,6 +445,8 @@ function 팝업사용(메시지) {
 가글패치노트.innerHTML = `패치노트`;
 객체생성(가글정보툴팁, "가글일어난일", "버튼", "여백", "");
 가글일어난일.innerHTML = `일어난일`;
+객체생성(가글정보툴팁, "가글커뮤니티", "버튼", "여백", "");
+가글커뮤니티.innerHTML = `커뮤니티`;
 객체생성(가글정보툴팁, "가글메뉴얼", "버튼", "여백", "");
 가글메뉴얼.innerHTML = `메뉴얼`;
 객체생성(가글정보툴팁, "가글우편함", "버튼", "여백", "");
@@ -608,18 +610,6 @@ async function 가글로그인화면() {
 
         객체생성(가글로그인컨테이너, "가글로그인설명", "가로꽉", "밑줄", "여백", "세로");
         가글로그인설명.innerHTML = `아이디는 한글만 가능합니다`;
-        //         가글로그인설명.innerHTML = `
-        // <a href="https://open.kakao.com/o/gbnmdWvh" target="_blank" style="color:#4FC1FF;">
-        // https://open.kakao.com/o/gbnmdWvh
-        // </a><br>
-        // 주인장의 실수로 데이터가 꼬여버렸습니다<br>
-        // 엎질러진 물, 코드 재정비좀 하고<br>
-        // 12월 29일 월요일 오전 10시 30분에 재오픈하겠습니다<br>
-        // 기다리는동안 위 단톡에 오셔서 정보얻어주심 감사하겠습니다<br>
-        // 단톡에 오지 않으셔도 해될건 없으니 월요일에 꼭 좀<br>
-        // 다시 찾아와 주십쇼..<br>
-        // 죄송합니다(__)<br>
-        // `;
 
         인풋객체생성(가글로그인컨테이너, "가글아이디입력", "", "", "여백");
         가글아이디입력.type = "text";
@@ -4743,6 +4733,7 @@ async function 가글상점화면() {
 
                         유저 = 결과.data;
 
+                        가글상점화면();
                         알림창표시(`스태미너 ${결과.획득스태미너} 획득!`);
 
                     } else {
@@ -4785,6 +4776,50 @@ async function 가글상점화면() {
     }
 };
 
+객체생성(document.body, "가글커뮤니티컨테이너", "사백", "테두리", "세로", "내부", "숨기기");
+
+//가글커뮤니티화면함수
+async function 가글커뮤니티화면() {
+    try {
+        화면잠금(``);
+        가글화면전환(가글커뮤니티컨테이너);
+
+        가글커뮤니티컨테이너.innerHTML = ``;
+
+        객체생성(가글커뮤니티컨테이너, "가글커뮤니티설명", "가로꽉", "밑줄", "여백");
+        가글커뮤니티설명.innerHTML = `
+        광장이 답답하신 분들은 단톡에 오셔서 정보를 교환해보세요<br>
+        `;
+
+        객체생성(가글커뮤니티컨테이너, "커뮤니티1", "가로꽉", "테두리", "여백");
+        커뮤니티1.innerHTML = `
+        <a href="https://open.kakao.com/o/gbnmdWvh" target="_blank" style="color:#4FC1FF;">
+        https://open.kakao.com/o/gbnmdWvh
+        </a><br>
+        `;
+
+
+    } catch (error) {
+        console.error("위치:", error.stack);
+        console.error("메시지:", error.message);
+
+    } finally {
+        화면해제();
+    }
+}
+
+가글커뮤니티.onclick = async () => {
+    try {
+        if (가글커뮤니티컨테이너.style.display === "none") {
+            가글커뮤니티화면();
+        }
+    } catch (error) {
+
+    } finally {
+        화면해제();
+    }
+};
+
 //시작화면
 const 화면목록 = [
     { 이름: "메뉴얼", 실행: 가글메뉴얼화면 },
@@ -4802,6 +4837,7 @@ const 화면목록 = [
     { 이름: "영혼", 실행: 가글영혼화면 },
     { 이름: "버프", 실행: 가글버프화면 },
     { 이름: "상점", 실행: 가글상점화면 },
+    { 이름: "커뮤니티", 실행: 가글커뮤니티화면 },
 ];
 
 //가글화면전환함수 화면추가
@@ -4828,6 +4864,7 @@ function 가글화면전환(화면이름) {
         가글영혼컨테이너,
         가글버프컨테이너,
         가글상점컨테이너,
+        가글커뮤니티컨테이너,
     ];
 
     for (let el of 화면들) {
@@ -4839,6 +4876,7 @@ function 가글화면전환(화면이름) {
 
 //단축키설정
 document.addEventListener("keydown", async function (e) {
+    자동플래그 = 0;
     if (
         document.activeElement &&
         document.activeElement.tagName === "INPUT"
@@ -4949,6 +4987,11 @@ document.addEventListener("keydown", async function (e) {
             case "j":
                 if (가글상점컨테이너.style.display === "none") {
                     가글상점.onclick();
+                }
+                break;
+            case "k":
+                if (가글커뮤니티컨테이너.style.display === "none") {
+                    가글커뮤니티.onclick();
                 }
                 break;
         }
