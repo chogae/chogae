@@ -363,6 +363,7 @@ app.post("/rkrmf", async (req, res) => {
 
 
             //기존유저
+            let 업뎃했으니새고 = 0;
 
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
@@ -395,6 +396,7 @@ app.post("/rkrmf", async (req, res) => {
                 };
 
                 가글.스탯.n일차++;
+                업뎃했으니새고 = 1;
 
             }
 
@@ -438,7 +440,6 @@ app.post("/rkrmf", async (req, res) => {
 
 
 
-            let 업뎃했으니새고 = 0;
             if (가글서브.스탯.업뎃) {
                 가글서브.스탯.업뎃 = 0;
                 업뎃했으니새고 = 1;
@@ -667,6 +668,9 @@ app.post("/rkrmf", async (req, res) => {
 
 
             for (let i = 0; i < 가글.스탯.스킬[가글.스탯.프리셋][10]; i++) {
+
+                if (가글.스탯.현재스태미너 < 11) break;
+
                 const 몬스터 = 몬스터스탯계산(가글.스탯.히든, 현재층, 가글);
                 const 전투결과 = 전투시뮬레이션(가글, 몬스터);
 
@@ -730,7 +734,6 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯.히든 = 랜덤뽑기(히든뽑기);
 
                 가글.스탯 = 유저스탯계산(가글.스탯);
-
 
 
             }
