@@ -18,6 +18,7 @@ import { 삼배수 } from "./공용정의.js";
 import { 히든뽑기 } from "./공용정의.js";
 import { 버프모음 } from "./공용정의.js";
 import { 버프범위 } from "./공용정의.js";
+import { 상점모음 } from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -338,8 +339,6 @@ app.post("/rkrmf", async (req, res) => {
 
             if (가글.스탯.n일차 === undefined) 가글.스탯.n일차 = 1;
 
-            // if (가글.스탯.마신승리 === undefined) 가글.스탯.마신승리 = 0;
-            // if (가글.스탯.마신패배 === undefined) 가글.스탯.마신패배 = 0;
 
             // if (가글.스탯.주인장) {
             //     가글.스탯.현재경험치 += 1000000000000;
@@ -1286,8 +1285,6 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-
-
             res.json({ 성공: true, 가글일어난일 });
         } else if (액션 === "가글전당") {
             const { 유저id, } = 액션데이터;
@@ -2215,21 +2212,30 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "유저 id 부족" });
             }
 
-            const { data: 가글 } = await supabase
+            const { data } = await supabase
                 .from("가글")
                 .select("*")
                 .eq("id", 유저id)
                 .maybeSingle();
 
-            if (!가글) {
+            if (!data) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (!가글.스탯.주인장) {
+            if (!data.스탯.주인장) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
+            data.스탯.현재골드 += 10000000;
 
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: data.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
 
             res.json({ 성공: true, data });
         } else if (액션 === "버프리롤") {
@@ -2299,6 +2305,76 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, data });
+        } else if (액션 === "상점구매") {
+            const { 유저id, 품목 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (data.스탯.현재골드 < 상점모음[품목].실제금액) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            let 획득스태미너 = 0;
+            if (품목 === 0) {
+                획득스태미너 = 랜덤드랍(1, 200);
+                if (획득스태미너 >= 190) {
+                    const { error } = await supabase
+                        .from("가글일어난일")
+                        .insert({
+                            스탯: `${data.스탯.닉네임}(이)가 도박으로 스태미너 ${획득스태미너} 대박!`
+                        });
+
+                    if (error) {
+                        console.log("로그기록 INSERT 에러:", error);
+                    }
+                } else if (획득스태미너 <= 10) {
+                    const { error } = await supabase
+                        .from("가글일어난일")
+                        .insert({
+                            스탯: `${data.스탯.닉네임}(이)가 도박으로 스태미너 ${획득스태미너} 쪽박..`
+                        });
+
+                    if (error) {
+                        console.log("로그기록 INSERT 에러:", error);
+                    }
+                }
+                data.스탯.총스태미너 += 획득스태미너;
+                data.스탯.현재스태미너 += 획득스태미너;
+            } else if (품목 === 1) {
+                획득스태미너 = 60;
+                data.스탯.총스태미너 += 60;
+                data.스탯.현재스태미너 += 60;
+
+            } else {
+                return res.json({ 성공: false, 오류: "실패" });
+
+            }
+
+            data.스탯.현재골드 -= 상점모음[품목].실제금액;
+            data.스탯 = 유저스탯계산(data.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: data.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, data, 획득스태미너 });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
@@ -2480,6 +2556,18 @@ app.listen(PORT);
 // };
 
 //정의
+
+function 랜덤드랍(min, max) {
+    const min소수 = (min.toString().split(".")[1] || "").length;
+    const max소수 = (max.toString().split(".")[1] || "").length;
+    const 소수자리 = Math.max(min소수, max소수);
+
+    const 값 = Math.random() * (max - min) + min;
+
+    return 소수자리 === 0
+        ? Math.floor(값)
+        : Number(값.toFixed(소수자리));
+}
 
 function 확률판정(확률퍼센트) {
     return Math.random() * 100 < 확률퍼센트;
