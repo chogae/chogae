@@ -968,6 +968,7 @@ async function 가글패치노트화면() {
             `
         <br>
         25.12.31<br>
+        버프에 10번스킬. 도약이 포함되었습니다<br>
         월드 - "보스"가 구현되었습니다<br>
 
         <br>
@@ -2368,6 +2369,38 @@ async function 가글주인장화면() {
         우편이름.type = "text";
         우편이름.placeholder = "우편이름";
 
+        우편이름.addEventListener("focus", () => {
+            const 우편이름목록 = [
+                "햄버거",
+                "샐러드",
+                "골드",
+            ];
+
+            if (!window.우편이름드롭다운) {
+                객체생성(document.body, "우편이름드롭다운", "세로", "테두리", "", "숨기기");
+                우편이름드롭다운.style.position = "absolute";
+                우편이름드롭다운.style.zIndex = "99999";
+            }
+
+            우편이름드롭다운.innerHTML = "";
+            우편이름드롭다운.style.display = "flex";
+
+            const rect = 우편이름.getBoundingClientRect();
+            우편이름드롭다운.style.left = rect.left + "px";
+            우편이름드롭다운.style.top = rect.bottom + "px";
+            우편이름드롭다운.style.width = rect.width + "px";
+
+            for (const 이름 of 우편이름목록) {
+                객체생성(우편이름드롭다운, 이름, "버튼", "여백");
+                window[이름].innerHTML = 이름;
+
+                window[이름].onclick = () => {
+                    우편이름.value = 이름;
+                    우편이름드롭다운.style.display = "none";
+                };
+            }
+        });
+
         인풋객체생성(우편박스, "우편수량", "", "", "여백");
         우편수량.type = "text";
         우편수량.placeholder = "우편수량";
@@ -2379,6 +2412,53 @@ async function 가글주인장화면() {
         인풋객체생성(우편박스, "우편받는이", "", "", "여백");
         우편받는이.type = "text";
         우편받는이.placeholder = "우편받는이";
+
+        우편받는이.addEventListener("focus", async () => {
+            const 응답 = await fetch("/rkrmf", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    액션: "가글서브닉네임조회",
+                    액션데이터: { 유저id: 유저.id }
+                })
+            });
+
+            const 결과 = await 응답.json();
+
+            if (결과.성공) {
+
+                if (!window.닉네임드롭다운) {
+                    객체생성(document.body, "닉네임드롭다운", "세로", "테두리", "", "숨기기");
+                    닉네임드롭다운.style.position = "absolute";
+                    닉네임드롭다운.style.zIndex = "99999";
+                }
+
+                닉네임드롭다운.innerHTML = "";
+                닉네임드롭다운.style.display = "flex";
+
+                const rect = 우편받는이.getBoundingClientRect();
+                닉네임드롭다운.style.left = rect.left + "px";
+                닉네임드롭다운.style.top = rect.bottom + "px";
+                닉네임드롭다운.style.width = rect.width + "px";
+
+                for (const 서브 of 결과.서브전체) {
+                    const 닉네임 = 서브.스탯?.닉네임;
+                    if (!닉네임) continue;
+
+                    객체생성(닉네임드롭다운, 닉네임, "버튼", "여백");
+                    window[닉네임].innerHTML = 닉네임;
+
+                    window[닉네임].onclick = () => {
+                        우편받는이.value = 닉네임;
+                        닉네임드롭다운.style.display = "none";
+                    };
+                }
+
+            } else {
+                알림창표시(결과.오류);
+            }
+
+        });
 
         객체생성(우편박스, "한명보내기", "테두리", "버튼", "여백");
         한명보내기.innerHTML = `한명보내기`;
@@ -3610,7 +3690,8 @@ async function 가글스킬화면() {
         가글스킬설명.innerHTML = `
         레벨당 스킬포인트 1개가 지급됩니다<br>
         스킬당 최대레벨은 19레벨입니다<br>
-        초기화 & 포인트회수 행동에는 모두 스태미너(1)가 소모됩니다
+        초기화 & 포인트회수 행동에는 모두 스태미너(1)가 소모됩니다<br>
+        "등반하실 땐 도약스킬 회수를 추천드립니다"<br>
         `;
 
 
@@ -4342,7 +4423,7 @@ async function 가글우편함화면() {
                 window[`${a}일행좌`].innerHTML = `${서브.스탯.우편함[a].년월}`;
 
                 객체생성(window[`${a}일행`], `${a}일행중`, "", "", "여백");
-                window[`${a}일행중`].innerHTML = `${서브.스탯.우편함[a].이름} ×${서브.스탯.우편함[a].수량}`;
+                window[`${a}일행중`].innerHTML = `${서브.스탯.우편함[a].이름} ×${숫자한글(서브.스탯.우편함[a].수량)}`;
 
                 객체생성(window[`${a}일행`], `${a}일행우`, "여백", "버튼", "테두리");
                 window[`${a}일행우`].innerHTML = `받기`;
@@ -4356,21 +4437,7 @@ async function 가글우편함화면() {
                 window[`${a}삼행`].innerHTML = `${서브.스탯.우편함[a].메모}`;
 
 
-
-                // 객체생성(window[`${a}이행`], `${a}이행좌`, "여백", "왼쪽", "플렉스일");
-                // window[`${a}이행좌`].innerHTML = `${서브.스탯.우편함[a].메모}`;
-
-
-
-                // 객체생성(window[`${a}이행`], `${a}이행우`, "플렉스일", "오른쪽", "여백");
-                // window[`${a}이행우`].innerHTML =
-                //     맵핑[서브.스탯.우편함[a].이름]?.() ?? "효과없음";
-
-
                 객체생성(window[`${a}이행`], `${a}이행좌`, "플렉스일", "오른쪽", "여백");
-
-
-
 
 
                 window[`${a}일행우`].onclick = async () => {
