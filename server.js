@@ -1734,6 +1734,10 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
+            if (가글.스탯.레벨 < 9) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
             const { data: 유저서브 } = await supabase
                 .from("가글서브")
                 .select("*")
@@ -1846,6 +1850,10 @@ app.post("/rkrmf", async (req, res) => {
                 .maybeSingle();
 
             if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (가글.스탯.레벨 < 9) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
@@ -2002,6 +2010,9 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
+            if (data.스탯.레벨 < 9) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
 
             const { error } = await supabase
                 .from("가글광장")
