@@ -1422,12 +1422,36 @@ app.post("/rkrmf", async (req, res) => {
                     return res.json({ 성공: false, 오류: "실패" });
                 }
 
+            } else if (행동 === "스태미너초기화") {
+                가글.스탯.현재스태미너 = 0;
+
+                const { error } = await supabase
+                    .from("가글")
+                    .update({ 스탯: 가글.스탯 })
+                    .eq("id", 유저id);
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+            } else if (행동 === "스태충전백") {
+                가글.스탯.현재스태미너 = 100;
+
+                const { error } = await supabase
+                    .from("가글")
+                    .update({ 스탯: 가글.스탯 })
+                    .eq("id", 유저id);
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
             } else {
                 return res.json({ 성공: false, 오류: "실패" });
 
             }
 
-            res.json({ 성공: true });
+            res.json({ 성공: true, 가글 });
         } else if (액션 === "유물초기화") {
             const { 유저id, } = 액션데이터;
 
@@ -1661,7 +1685,7 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (유저.스탯.레벨 < 9) {
+            if (유저[0].스탯.레벨 < 9) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 

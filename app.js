@@ -960,7 +960,7 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", `여백`);
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.3.0`;
+        가글패치노트설명.innerHTML = `v0.3.1`;
 
         //패치노트작성
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", `여백`);
@@ -1938,6 +1938,13 @@ async function 가글주인장화면() {
         const 주인장용 = [
             "골드백만",
             "업데이트",
+            "점검",
+            "점검해제",
+            "일어난일리셋",
+            "로그리셋",
+            "광장리셋",
+            "스태미너초기화",
+            "스태충전백",
         ];
 
         for (let i = 0; i < 주인장용.length; i++) {
@@ -1964,8 +1971,9 @@ async function 가글주인장화면() {
                     const 결과 = await 응답.json();
 
                     if (결과.성공) {
-                        알림창표시("점검때렸음");
+                        알림창표시(`${주인장용[i]} 성공!`);
 
+                        유저 = 결과.가글;
                     } else {
                         알림창표시(결과.오류);
                     }
@@ -1989,266 +1997,6 @@ async function 가글주인장화면() {
 
 
 
-        객체생성(가글주인장컨테이너, "점검때리기", `테두리`, "버튼", `여백`);
-        점검때리기.innerHTML = `점검때리기`;
-
-        점검때리기.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "점검때리기",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("점검때렸음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "점검해제", `테두리`, "버튼", `여백`);
-        점검해제.innerHTML = `점검해제`;
-
-        점검해제.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "점검해제",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("점검해제했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "업뎃때리기", `테두리`, "버튼", `여백`);
-        업뎃때리기.innerHTML = `업뎃때리기`;
-
-        업뎃때리기.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "업뎃때리기",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("업뎃때렸음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-
-        객체생성(가글주인장컨테이너, "일어난일리셋", `테두리`, "버튼", `여백`);
-        일어난일리셋.innerHTML = `일어난일리셋`;
-
-        일어난일리셋.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "일어난일리셋",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("일어난일리셋했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "로그리셋", `테두리`, "버튼", `여백`);
-        로그리셋.innerHTML = `로그리셋`;
-
-        로그리셋.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "로그리셋",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("로그리셋했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "광장초기화", `테두리`, "버튼", `여백`);
-        광장초기화.innerHTML = `광장초기화`;
-
-        광장초기화.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "광장초기화",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("광장초기화했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "스태미너초기화", `테두리`, "버튼", `여백`);
-        스태미너초기화.innerHTML = `스태미너초기화`;
-
-        스태미너초기화.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "스태미너초기화",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("스태미너초기화");
-
-                    유저 = 결과.data;
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };//
 
 
 
