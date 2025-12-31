@@ -2482,6 +2482,42 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, 서브전체: 서브, });
+        } else if (액션 === "프리셋변경") {
+            const { 유저id, 프리셋 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!가글.스탯.현재스태미너) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            가글.스탯.프리셋 = 프리셋;
+            가글.스탯.현재스태미너--;
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글 });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
