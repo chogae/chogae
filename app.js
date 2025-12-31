@@ -960,7 +960,7 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", `여백`);
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.2.9`;
+        가글패치노트설명.innerHTML = `v0.3.0`;
 
         //패치노트작성
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", `여백`);
@@ -1935,169 +1935,58 @@ async function 가글주인장화면() {
         가글주인장설명.innerHTML = `주인장 전용화면`;
 
 
+        const 주인장용 = [
+            "골드백만",
+            "업데이트",
+        ];
 
+        for (let i = 0; i < 주인장용.length; i++) {
+            객체생성(가글주인장컨테이너, `주인장용${i}`, `테두리`, "버튼", `여백`);
+            window[`주인장용${i}`].innerHTML = 주인장용[i];
+            window[`주인장용${i}`].onclick = async () => {
+                try {
+                    화면잠금();
 
+                    if (!유저.스탯.주인장) {
+                        알림창표시(`돌아가쇼`);
+                        return;
+                    }
 
-        객체생성(가글주인장컨테이너, "그때그때필요한거", `테두리`, "버튼", `여백`);
-        그때그때필요한거.innerHTML = `그때그때필요한거`;
+                    const 응답 = await fetch("/rkrmf", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            액션: "주인장전용",
+                            액션데이터: { 유저id: 유저.id, 행동: 주인장용[i] }
+                        })
+                    });
 
-        그때그때필요한거.onclick = async () => {
-            try {
-                화면잠금();
+                    const 결과 = await 응답.json();
 
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
+                    if (결과.성공) {
+                        알림창표시("점검때렸음");
+
+                    } else {
+                        알림창표시(결과.오류);
+                    }
+
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    화면해제();
                 }
+            };
 
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "그때그때필요한거",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    알림창표시("그때그때필요한거");
-                    유저 = 결과.data;
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
+        }
 
 
 
 
 
 
-        객체생성(가글주인장컨테이너, "주인장스태회복", `테두리`, "버튼", `여백`);
-        주인장스태회복.innerHTML = `스태회복`;
-
-        주인장스태회복.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "주인장스태회복",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    유저 = 결과.가글;
-                    가글주인장화면();
-                    알림창표시("스태회복했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
-
-        객체생성(가글주인장컨테이너, "주인장숙련도회복", `테두리`, "버튼", `여백`);
-        주인장숙련도회복.innerHTML = `숙련도회복`;
-
-        주인장숙련도회복.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "주인장숙련도회복",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    유저 = 결과.가글;
-                    가글주인장화면();
-                    알림창표시("숙련도회복했음");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
 
 
-        객체생성(가글주인장컨테이너, "주인장골드오링", `테두리`, "버튼", `여백`);
-        주인장골드오링.innerHTML = `골드오링`;
 
-        주인장골드오링.onclick = async () => {
-            try {
-                화면잠금();
-
-                if (!유저.스탯.주인장) {
-                    알림창표시(`돌아가쇼`);
-                    return;
-                }
-
-                const 응답 = await fetch("/rkrmf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        액션: "주인장골드오링",
-                        액션데이터: { 유저id: 유저.id }
-                    })
-                });
-
-                const 결과 = await 응답.json();
-
-                if (결과.성공) {
-                    유저 = 결과.data;
-                    가글주인장화면();
-                    알림창표시("골드오링");
-
-                } else {
-                    알림창표시(결과.오류);
-                }
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                화면해제();
-            }
-        };
 
 
         객체생성(가글주인장컨테이너, "점검때리기", `테두리`, "버튼", `여백`);
@@ -2359,9 +2248,7 @@ async function 가글주인장화면() {
             } finally {
                 화면해제();
             }
-        };
-
-
+        };//
 
 
 
@@ -4038,55 +3925,6 @@ async function 가글마신전화면() {
                 객체생성(마신정보, "마신도전숭배", "", "", `여백`);
                 객체생성(마신도전숭배, "마신도전", "버튼", `테두리`, `여백`);
                 마신도전.innerHTML = `도전`;
-                객체생성(마신도전숭배, "마신숭배하기", "버튼", `테두리`, `여백`);
-                마신숭배하기.innerHTML = `숭배`;
-
-                마신숭배하기.onclick = async () => {
-                    try {
-                        화면잠금();
-
-                        if (마신.닉네임 === 유저.스탯.닉네임) {
-                            알림창표시(`마신은 그저 지켜볼 뿐입니다`);
-                            return;
-                        }
-
-                        if (유저.스탯.레벨 < 9) {
-                            알림창표시(`9레벨부터 가능합니다`);
-                            return;
-                        }
-
-                        if (유저.스탯.현재스태미너 < 1) {
-                            알림창표시(`스태미너가 부족합니다`);
-                            return;
-                        }
-
-                        const 응답 = await fetch("/rkrmf", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                액션: "마신숭배",
-                                액션데이터: { 유저id: 유저.id }
-                            })
-                        });
-
-                        const 결과 = await 응답.json();
-
-                        if (결과.성공) {
-
-                            유저 = 결과.가글;
-
-                            가글마신전화면();
-
-                        } else {
-                            알림창표시(결과.오류);
-                        }
-
-                    } catch (error) {
-                        console.log(error);
-                    } finally {
-                        화면해제();
-                    }
-                };
 
                 마신도전.onclick = async () => {
                     try {
@@ -4207,6 +4045,57 @@ async function 가글마신전화면() {
 
 
                             }
+
+                        } else {
+                            알림창표시(결과.오류);
+                        }
+
+                    } catch (error) {
+                        console.log(error);
+                    } finally {
+                        화면해제();
+                    }
+                };
+
+
+                객체생성(마신도전숭배, "마신숭배하기", "버튼", `테두리`, `여백`);
+                마신숭배하기.innerHTML = `숭배`;
+
+                마신숭배하기.onclick = async () => {
+                    try {
+                        화면잠금();
+
+                        if (마신.닉네임 === 유저.스탯.닉네임) {
+                            알림창표시(`마신은 그저 지켜볼 뿐입니다`);
+                            return;
+                        }
+
+                        if (유저.스탯.레벨 < 9) {
+                            알림창표시(`9레벨부터 가능합니다`);
+                            return;
+                        }
+
+                        if (유저.스탯.현재스태미너 < 1) {
+                            알림창표시(`스태미너가 부족합니다`);
+                            return;
+                        }
+
+                        const 응답 = await fetch("/rkrmf", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                액션: "마신숭배",
+                                액션데이터: { 유저id: 유저.id }
+                            })
+                        });
+
+                        const 결과 = await 응답.json();
+
+                        if (결과.성공) {
+
+                            유저 = 결과.가글;
+
+                            가글마신전화면();
 
                         } else {
                             알림창표시(결과.오류);
