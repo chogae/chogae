@@ -203,6 +203,19 @@ export const 스킬모음 = {
     10: { 이름: "도약", 설명: v => `전투 스태미너 소모량 + ${v}(스킬레벨)%` },
 };
 
+export const 오늘 = () =>
+    new Date(
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    ).toISOString().slice(0, 10);
+
+export const 어제 = () => {
+    const d = new Date(
+        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
+    );
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().slice(0, 10);
+};
+
 export const 색상맵 = {
     연검: "#3A3A3A",   // 밝은 회색 느낌의 연한 검정
     중검: "#1F1F1F",   // 선생님이 쓰는 기본 배경색

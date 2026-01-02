@@ -4,21 +4,25 @@ import { fileURLToPath } from "url";
 import { createClient } from "@supabase/supabase-js";
 import "dotenv/config";
 
-import { 등급 } from "./공용정의.js";
-import { 일반몬스터확률표 } from "./공용정의.js";
-import { 히든몬스터확률표 } from "./공용정의.js";
-import { 일반몬스터 } from "./공용정의.js";
-import { 히든몬스터 } from "./공용정의.js";
-import { 유물모음 } from "./공용정의.js";
-import { 색상맵 } from "./공용정의.js";
-import { 스킬모음 } from "./공용정의.js";
-import { 맵핑 } from "./공용정의.js";
-import { 유물확률표 } from "./공용정의.js";
-import { 삼배수 } from "./공용정의.js";
-import { 히든뽑기 } from "./공용정의.js";
-import { 버프모음 } from "./공용정의.js";
-import { 버프범위 } from "./공용정의.js";
-import { 상점모음 } from "./공용정의.js";
+import {
+    등급,
+    일반몬스터확률표,
+    히든몬스터확률표,
+    일반몬스터,
+    히든몬스터,
+    유물모음,
+    색상맵,
+    스킬모음,
+    맵핑,
+    유물확률표,
+    삼배수,
+    히든뽑기,
+    버프모음,
+    버프범위,
+    상점모음,
+    어제,
+    오늘
+} from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,17 +47,6 @@ app.post("/rkrmf", async (req, res) => {
     const 시 = Math.floor(new Date().getTime() / 3600000); // 478520,
     const 분 = Math.floor(new Date().getTime() / 60000); // 478520,
     const 초 = Math.floor(new Date().getTime() / 1000); // 478520,
-
-    const 오늘 = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
-    ).toISOString().slice(0, 10);
-
-    const d = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
-    );
-    d.setDate(d.getDate() - 1);
-    const 어제 = d.toISOString().slice(0, 10);
-
 
     try {
         const { 액션, 액션데이터 } = req.body;
@@ -175,18 +168,6 @@ app.post("/rkrmf", async (req, res) => {
 
             return res.json({ 성공: true });
         } else if (액션 === "가글로그인") {
-            // const now = new Date();
-
-            // const 조건 =
-            //     now.getMonth() === 11 &&   // 12월 (0부터 시작)
-            //     now.getDate() === 29 &&
-            //     now.getHours() === 10 &&
-            //     now.getMinutes() === 30;
-
-            // if (!조건) {
-            //     // return res.json({ 성공: false, 오류: "실패" });
-            // }
-
 
             const { 아이디, 비번 } = 액션데이터;
 
@@ -375,7 +356,7 @@ app.post("/rkrmf", async (req, res) => {
 
             if (가글.스탯.n일차 === undefined) 가글.스탯.n일차 = 1;
 
-            if (가글.스탯.보스전 === undefined) 가글.스탯.보스전 = {};
+            if (가글.스탯.미러전 === undefined) 가글.스탯.미러전 = {};
 
             //기존유저
 
@@ -404,21 +385,21 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯.n일차++;
 
 
-                // let { data: 보스전전체 } = await supabase
+                // let { data: 미러전전체 } = await supabase
                 //     .from("가글")
                 //     .select("*")
 
-                // if (!보스전전체) {
+                // if (!미러전전체) {
                 //     return res.json({ 성공: false, 오류: "실패" });
                 // }
-                // 보스전전체 = 보스전전체
-                //     .filter(v => v.스탯?.보스전?.[어제] > 0)
+                // 미러전전체 = 미러전전체
+                //     .filter(v => v.스탯?.미러전?.[어제()] > 0)
                 //     .sort((a, b) =>
-                //         (b.스탯?.보스전?.[어제] ?? 0) -
-                //         (a.스탯?.보스전?.[어제] ?? 0)
+                //         (b.스탯?.미러전?.[어제()] ?? 0) -
+                //         (a.스탯?.미러전?.[어제()] ?? 0)
                 //     );
                 // for (let i = 0; i < 9; i++) {
-                //     if (보스전전체[i]?.스탯.아이디 === 가글.스탯.아이디) {
+                //     if (미러전전체[i]?.스탯.아이디 === 가글.스탯.아이디) {
                 //         const 우편함 = 가글서브.스탯.우편함 || {};
                 //         const 최대키 = Math.max(0, ...Object.keys(우편함).map(Number));
 
@@ -428,7 +409,7 @@ app.post("/rkrmf", async (req, res) => {
                 //             년월: 년월,
                 //             요일: 요일,
                 //             시각: 시각,
-                //             메모: `${어제} 보스전 ${i + 1}위 보상`
+                //             메모: `${어제()} 미러전 ${i + 1}위 보상`
                 //         };
 
                 //         const { error: 업뎃에러 } = await supabase
@@ -532,6 +513,12 @@ app.post("/rkrmf", async (req, res) => {
                 .filter(v => v.스탯?.마신?.방어 > 0)
                 .sort((a, b) => b.스탯.마신.방어 - a.스탯.마신.방어);
 
+            const 현재마신 = data.reduce((최대, v) => {
+                if (!v.스탯?.마신?.포인트) return 최대;
+                if (!최대 || v.스탯.마신.포인트 > 최대.스탯.마신.포인트) return v;
+                return 최대;
+            }, null);
+
             return res.json({
                 성공: true,
                 가글,
@@ -540,6 +527,7 @@ app.post("/rkrmf", async (req, res) => {
                 마신방어1위: 방어랭킹[0],
                 마신방어2위: 방어랭킹[1],
                 마신방어3위: 방어랭킹[2],
+                현재마신,
             });
         } else if (액션 === "계정삭제") {
             const { 유저id } = 액션데이터;
@@ -788,6 +776,75 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯 = 유저스탯계산(가글.스탯);
 
 
+            }
+
+            if (가글.스탯.주인장) {
+                while (가글.스탯.현재스태미너) {
+                    const 몬스터 = 몬스터스탯계산(가글.스탯.히든, 현재층, 가글);
+                    const 전투결과 = 전투시뮬레이션(가글, 몬스터);
+
+                    if (가글.스탯.히든) {
+                        가글.스탯.히든몬스터[몬스터.스탯.번호]++;
+                    } else if (!가글.스탯.히든) {
+                        가글.스탯.일반몬스터[몬스터.스탯.번호]++;
+                    }
+
+                    가글.스탯.현재층 = 현재층;
+
+                    let 영혼 = 0;
+                    if (전투결과.승패) {
+                        가글.스탯.악마승리++;
+                        가글.스탯.총경험치 += 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 11 ? 200 : 1);
+                        가글.스탯.현재경험치 += 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 11 ? 200 : 1);
+                        가글.스탯.획득경험치 = 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 11 ? 200 : 1);
+
+                        가글.스탯.총골드 += 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 33 ? 200 : 1);
+                        가글.스탯.현재골드 += 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 33 ? 200 : 1);
+                        가글.스탯.획득골드 = 몬스터.스탯.번호 * 현재층 * (몬스터.스탯.번호 === 33 ? 200 : 1);
+
+                        가글.스탯.총숙련도 += 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
+                        가글.스탯.현재숙련도 += 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
+                        가글.스탯.획득숙련도 = 현재층 * (몬스터.스탯.번호 === 66 ? 200 : 1);
+
+                        if (가글.스탯.최고층 < 가글.스탯.현재층) {
+                            가글.스탯.최고층 = 현재층;
+                        }
+
+                        if (확률판정(1)) {
+                            if (가글.스탯.영혼[현재층] < 999) {
+                                가글.스탯.영혼[현재층]++;
+                                영혼 = 현재층;
+
+                            }
+                        }
+
+                        if (가글.스탯.히든) {
+
+                            가글.스탯.유물[몬스터.스탯.번호][랜덤뽑기(유물확률표)]++;
+                            가글.스탯.유물총량[몬스터.스탯.번호]++;
+
+                            if (몬스터.스탯.번호 > 5) {
+                                const { error } = await supabase
+                                    .from("가글일어난일")
+                                    .insert({
+                                        스탯: `${가글.스탯.닉네임}(이)가 [${등급[몬스터.스탯.번호].이름}]유물 ${유물모음[몬스터.스탯.번호].이름} 드랍!`
+                                    });
+
+                                if (error) {
+                                    console.log("로그기록 INSERT 에러:", error);
+                                }
+                            }
+                        }
+                    } else {
+                        가글.스탯.악마패배++;
+
+                    }
+                    가글.스탯.현재스태미너--;
+                    가글.스탯.히든 = 랜덤뽑기(히든뽑기);
+
+                    가글.스탯 = 유저스탯계산(가글.스탯);
+
+                }
             }
 
             const { error: 업데이트에러 } = await supabase
@@ -1448,6 +1505,18 @@ app.post("/rkrmf", async (req, res) => {
                     return res.json({ 성공: false, 오류: "실패" });
                 }
 
+            } else if (행동 === "골드백만") {
+                가글.스탯.현재골드 = 1000000;
+
+                const { error } = await supabase
+                    .from("가글")
+                    .update({ 스탯: 가글.스탯 })
+                    .eq("id", 유저id);
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
             } else {
                 return res.json({ 성공: false, 오류: "실패" });
 
@@ -1721,7 +1790,6 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-
             유저[0].스탯.현재스태미너--;
 
             const 전투결과 = 전투시뮬레이션(
@@ -1729,7 +1797,6 @@ app.post("/rkrmf", async (req, res) => {
                 structuredClone(마신[0]),
                 0
             );
-
 
             if (전투결과.승패) {
                 const { error } = await supabase
@@ -2403,6 +2470,63 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, 가글 });
+        } else if (액션 === "미러화면") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글전체, error: 가글전체에러 } = await supabase
+                .from("가글")
+                .select("*");
+
+            if (가글전체에러) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글전체 });
+        } else if (액션 === "미러도전") {
+            const { 유저id, } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            const 나 = structuredClone(가글);
+            const 허상 = structuredClone(가글);
+            허상.스탯.닉네임 = "???";
+
+            const 전투결과 = 전투시뮬레이션(
+                나,
+                허상,
+                0
+            );
+            가글.스탯.미러전[오늘()] = 가글.스탯.미러전[오늘()] > 전투결과.총데미지 ? 가글.스탯.미러전[오늘()] : 전투결과.총데미지;
+            가글.스탯.현재스태미너--;
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글, 전투결과, 미러: 허상 });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
@@ -2751,6 +2875,7 @@ function 유저스탯계산(스탯) {
 
 //전투시뮬레이션함수
 function 전투시뮬레이션(나, 상대, 악마성 = 1) {
+    let 총데미지 = 0;
     const 선턴 = 나.스탯.최종속력 >= 상대.스탯.최종속력 ? 1 : 0; // 1=나, 0=상대
     let 진행턴 = 0;
     const 전투로그 = {};
@@ -2871,6 +2996,7 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                     continue;
                 }
                 상대남은체력 -= 나기본데미지;
+                총데미지 += 나기본데미지;
                 전투로그[진행턴].push({
                     주체: 1,
                     스킬: 나발동스킬,
@@ -2923,6 +3049,7 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
 
                         let 연타뎀 = Math.floor(나기본데미지 * 랜덤배율);
                         상대남은체력 -= 연타뎀;
+                        총데미지 += 연타뎀;
 
                         전투로그[진행턴].push({
                             주체: 1,
@@ -2975,6 +3102,8 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                     });
                 } else if (확률판정(나반격)) {
                     상대남은체력 -= 나기본데미지;
+                    총데미지 += 나기본데미지;
+
                     전투로그[진행턴].push({
                         주체: 1,
                         스킬: [3],
@@ -3050,7 +3179,8 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
     return {
         승패,
         진행턴,
-        전투로그
+        전투로그,
+        총데미지,
     };
 }
 
