@@ -400,39 +400,35 @@ app.post("/rkrmf", async (req, res) => {
                         (a.스탯?.미러전?.[어제()] ?? 0)
                     );
 
-                for (let i = 0; i < 9; i++) {
-                    if (미러전전체[i]?.스탯.아이디 === 가글.스탯.아이디) {
-                        const 우편함 = 가글서브.스탯.우편함 || {};
-                        const 최대키 = Math.max(0, ...Object.keys(우편함).map(Number));
+                const 내순위 = 미러전전체.findIndex(
+                    u => u?.스탯?.아이디 === 가글.스탯.아이디
+                );
 
-                        우편함[최대키 + 1] = {
-                            이름: "골드",
-                            수량: 300000 - i * 30000,
-                            년월: 년월,
-                            요일: 요일,
-                            시각: 시각,
-                            메모: `${어제()} 미러전 ${i + 1}위 보상`
-                        };
+                if (내순위 !== -1) {
+                    const 우편함 = 가글서브.스탯.우편함 || {};
+                    const 최대키 = Math.max(0, ...Object.keys(우편함).map(Number));
 
-                        const { error } = await supabase
-                            .from("가글로그")
-                            .insert({
-                                스탯: `${가글.스탯.아이디}(${가글.스탯.닉네임}) ${어제()} 미러전 ${i + 1}위 보상 ${300000 - i * 30000}Gold`
-                            });
+                    let 지급골드;
+                    let 순위표시;
 
-                        if (error) {
-                            console.log("로그기록 INSERT 에러:", error);
-                        }
-
-                        const { error: 업뎃에러 } = await supabase
-                            .from("가글서브")
-                            .update({ 스탯: 가글서브.스탯 })
-                            .eq("id", 가글.id);
-
-                        if (업뎃에러) {
-                            console.log("스탯 업데이트 오류:", 업뎃에러);
-                        }
+                    if (내순위 < 9) {
+                        지급골드 = 300000 - 내순위 * 20000;
+                        순위표시 = `${내순위 + 1}위`;
+                    } else {
+                        지급골드 = 100000;
+                        순위표시 = `참가`;
                     }
+
+                    우편함[최대키 + 1] = {
+                        이름: "골드",
+                        수량: 지급골드,
+                        년월,
+                        요일,
+                        시각,
+                        메모: `${어제()} 미러전 ${순위표시} 보상`
+                    };
+
+
                 }
 
                 for (const a in 가글.스탯.미러전) {
@@ -1689,28 +1685,6 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "유저 id 부족" });
             }
 
-            // const { data: 마신서브 } = await supabase
-            //     .from("가글서브")
-            //     .select("*")
-            //     .order("스탯->마신->포인트", { ascending: false })
-            //     .limit(1);
-
-            // if (!마신서브[0]) {
-            //     return res.json({ 성공: false, 오류: "실패" });
-            // }
-
-            // const { data: 마신 } = await supabase
-            //     .from("가글")
-            //     .select("*")
-            //     .eq("id", 마신서브[0].id)
-            //     .maybeSingle();
-
-            // if (!마신) {
-            //     return res.json({ 성공: false, 오류: "실패" });
-            // }
-
-
-
             const { data: 마신서브목록 } = await supabase
                 .from("가글서브")
                 .select("*")
@@ -1772,8 +1746,10 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (유저[0].스탯.레벨 < 9) {
-                return res.json({ 성공: false, 오류: "실패" });
+            if (!유저[0].스탯.주인장) {
+                if (유저[0].스탯.레벨 < 9) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
             }
 
             const { data: 유저서브 } = await supabase
@@ -1889,8 +1865,10 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (가글.스탯.레벨 < 9) {
-                return res.json({ 성공: false, 오류: "실패" });
+            if (!가글.스탯.주인장) {
+                if (가글.스탯.레벨 < 9) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
             }
 
             const { data: 마신서브 } = await supabase
@@ -2046,8 +2024,11 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            if (data.스탯.레벨 < 9) {
-                return res.json({ 성공: false, 오류: "실패" });
+            if (!data.스탯.주인장) {
+                if (data.스탯.레벨 < 9) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
             }
 
             const { error } = await supabase
@@ -2528,7 +2509,8 @@ app.post("/rkrmf", async (req, res) => {
                 허상,
                 0
             );
-            가글.스탯.미러전[오늘()] = 가글.스탯.미러전[오늘()] > 전투결과.총데미지 ? 가글.스탯.미러전[오늘()] : 전투결과.총데미지;
+            // 가글.스탯.미러전[오늘()] = 가글.스탯.미러전[오늘()] > 전투결과.총데미지 ? 가글.스탯.미러전[오늘()] : 전투결과.총데미지;
+            가글.스탯.미러전[오늘()] += 전투결과.총데미지;
             가글.스탯.현재스태미너--;
 
             가글.스탯 = 유저스탯계산(가글.스탯);
