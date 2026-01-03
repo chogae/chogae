@@ -383,6 +383,7 @@ app.post("/rkrmf", async (req, res) => {
                 };
 
                 가글.스탯.n일차++;
+                업뎃했으니새고 = 1;
 
                 let { data: 미러전전체 } = await supabase
                     .from("가글")
