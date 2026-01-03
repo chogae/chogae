@@ -203,17 +203,21 @@ export const 스킬모음 = {
     10: { 이름: "도약", 설명: v => `전투 스태미너 소모량 + ${v}(스킬레벨)%` },
 };
 
-export const 오늘 = () =>
-    new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
-    ).toISOString().slice(0, 10);
+export const 오늘 = () => {
+    const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+};
 
 export const 어제 = () => {
-    const d = new Date(
-        new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" })
-    );
+    const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
     d.setDate(d.getDate() - 1);
-    return d.toISOString().slice(0, 10);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
 };
 
 export const 색상맵 = {
