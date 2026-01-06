@@ -1,28 +1,3 @@
-// @ts-nocheck
-
-/*
-
-해야할일
-
-스탯감소 디버프캐릭
-연속공격횟수증가 속공캐릭
-받은데미지 반사 탱커캐릭
-자신스탯 대가로 데미지 증가캐릭
-영혼수집가
-
-Ctrl + Shift + P
-Developer: Inspect Editor Tokens and Scopes
-
-git add . && git commit -m "배포" && git push origin main
-
-nodemon server.js
-
-npm run d
-
-dev = development(개발)
-
-*/
-
 import {
     등급,
     일반몬스터확률표,
@@ -410,65 +385,70 @@ function 팝업사용(메시지) {
 
 객체생성(상단바박스, "가글메뉴들", "", "", "숨기기");
 객체생성(가글메뉴들, "가글전투", "", `여백`, "버튼");
-가글전투.innerHTML = `전투`;
+가글전투.innerHTML = `전투(r)`;
+가글전투.style.margin = `0`;
 객체생성(가글메뉴들, "가글성장", "", `여백`, "버튼");
-가글성장.innerHTML = `성장`;
+가글성장.innerHTML = `성장(b)`;
+가글성장.style.margin = `0`;
 객체생성(가글메뉴들, "가글월드", "", `여백`, "버튼");
-가글월드.innerHTML = `월드`;
+가글월드.innerHTML = `월드(n)`;
+가글월드.style.margin = `0`;
 객체생성(가글메뉴들, "가글전당", "", `여백`, "버튼");
-가글전당.innerHTML = `전당`;
+가글전당.innerHTML = `전당(o)`;
+가글전당.style.margin = `0`;
 객체생성(가글메뉴들, "가글정보", "", `여백`, "버튼");
-가글정보.innerHTML = `정보`;
-
-객체생성(document.body, "가글월드툴팁", "고정", `테두리`, "세로", "숨기기",);
-가글월드툴팁.style.zIndex = "9999";
-객체생성(가글월드툴팁, "가글마신전", "버튼", `여백`, "");
-가글마신전.innerHTML = `마신전`;
-객체생성(가글월드툴팁, "가글미러", "버튼", `여백`, "");
-가글미러.innerHTML = `미러전`;
+가글정보.innerHTML = `정보(m)`;
+가글정보.style.margin = `0`;
 
 //화면추가
 객체생성(document.body, "가글성장툴팁", "고정", `테두리`, "세로", "숨기기",);
 가글성장툴팁.style.zIndex = "9999";
 객체생성(가글성장툴팁, "가글장비", "버튼", `여백`, "");
-가글장비.innerHTML = `장비`;
+가글장비.innerHTML = `장비(u)`;
 객체생성(가글성장툴팁, "가글유물", "버튼", `여백`, "");
-가글유물.innerHTML = `유물`;
+가글유물.innerHTML = `유물(p)`;
 객체생성(가글성장툴팁, "가글스킬", "버튼", `여백`, "");
-가글스킬.innerHTML = `스킬`;
+가글스킬.innerHTML = `스킬(a)`;
 객체생성(가글성장툴팁, "가글영혼", "버튼", `여백`, "");
-가글영혼.innerHTML = `영혼`;
+가글영혼.innerHTML = `영혼(g)`;
 객체생성(가글성장툴팁, "가글버프", "버튼", `여백`, "");
-가글버프.innerHTML = `버프`;
+가글버프.innerHTML = `버프(h)`;
 객체생성(가글성장툴팁, "가글상점", "버튼", `여백`, "");
-가글상점.innerHTML = `상점`;
+가글상점.innerHTML = `상점(j)`;
 객체생성(가글성장툴팁, "가글전직", "버튼", `여백`, "");
-가글전직.innerHTML = `전직`;
+가글전직.innerHTML = `전직(c)`;
+
+객체생성(document.body, "가글월드툴팁", "고정", `테두리`, "세로", "숨기기",);
+가글월드툴팁.style.zIndex = "9999";
+객체생성(가글월드툴팁, "가글마신전", "버튼", `여백`, "");
+가글마신전.innerHTML = `마신전(s)`;
+객체생성(가글월드툴팁, "가글미러", "버튼", `여백`, "");
+가글미러.innerHTML = `미러전(k)`;
 
 객체생성(document.body, "가글정보툴팁", "고정", `테두리`, "세로", "숨기기",);
 가글정보툴팁.style.zIndex = "9999";
 객체생성(가글정보툴팁, "가글계정삭제", "버튼", `여백`, "");
 가글계정삭제.innerHTML = `계정삭제`;
 객체생성(가글정보툴팁, "가글로그아웃", "버튼", `여백`, "");
-가글로그아웃.innerHTML = `로그아웃`;
+가글로그아웃.innerHTML = `로그아웃(w)`;
 객체생성(가글정보툴팁, "가글패치노트", "버튼", `여백`, "");
-가글패치노트.innerHTML = `패치노트`;
+가글패치노트.innerHTML = `패치노트(e)`;
 객체생성(가글정보툴팁, "가글일어난일", "버튼", `여백`, "");
-가글일어난일.innerHTML = `일어난일`;
+가글일어난일.innerHTML = `일어난일(i)`;
 객체생성(가글정보툴팁, "가글커뮤니티", "버튼", `여백`, "");
-가글커뮤니티.innerHTML = `커뮤니티`;
+가글커뮤니티.innerHTML = `커뮤니티(k)`;
 객체생성(가글정보툴팁, "가글출석체크", "버튼", `여백`, "");
-가글출석체크.innerHTML = `출석체크`;
+가글출석체크.innerHTML = `출석체크(z)`;
 객체생성(가글정보툴팁, "가글메뉴얼", "버튼", `여백`, "");
-가글메뉴얼.innerHTML = `메뉴얼`;
+가글메뉴얼.innerHTML = `메뉴얼(y)`;
 객체생성(가글정보툴팁, "가글우편함", "버튼", `여백`, "");
-가글우편함.innerHTML = `우편함`;
+가글우편함.innerHTML = `우편함(f)`;
 객체생성(가글정보툴팁, "가글설정", "버튼", `여백`, "");
-가글설정.innerHTML = `설정`;
+가글설정.innerHTML = `설정(t)`;
 객체생성(가글정보툴팁, "가글광장", "버튼", `여백`, "");
-가글광장.innerHTML = `광장`;
+가글광장.innerHTML = `광장(d)`;
 객체생성(가글정보툴팁, "가글주인장", "버튼", `여백`, "숨기기");
-가글주인장.innerHTML = `주인장`;
+가글주인장.innerHTML = `주인장(x)`;
 
 객체생성(상단바박스, "삼국메뉴들", "", "", "숨기기");
 객체생성(삼국메뉴들, "삼국전투", "", `여백`, "버튼");
@@ -608,6 +588,36 @@ if (게임 && 저장유저) {
 
 }
 
+function 가글메뉴툴팁(버튼, 툴팁) {
+
+    const 표시 = () => {
+        툴팁.style.display = "flex";
+
+        const rect = 버튼.getBoundingClientRect();
+        const tip = 툴팁.getBoundingClientRect();
+
+        툴팁.style.left = (rect.right - tip.width) + "px";
+        툴팁.style.top = rect.bottom + "px";
+    };
+
+    const 숨김 = () => {
+        툴팁.style.display = "none";
+    };
+
+    버튼.addEventListener("mouseenter", 표시);
+
+    버튼.addEventListener("mouseleave", e => {
+        if (!툴팁.contains(e.relatedTarget)) 숨김();
+    });
+
+    툴팁.addEventListener("mouseleave", e => {
+        if (!버튼.contains(e.relatedTarget)) 숨김();
+    });
+
+    // 단축키/외부 호출용
+    툴팁.표시 = 표시;
+    툴팁.숨김 = 숨김;
+}
 
 객체생성(document.body, "가글로그인컨테이너", "사백", `테두리`, "세로", "내부", "숨기기");
 
@@ -773,46 +783,10 @@ async function 가글로그인화면() {
 
                     가글메뉴들.style.display = `flex`;
 
-                    function 가글메뉴툴팁설정(버튼, 툴팁) {
+                    가글메뉴툴팁(가글정보, 가글정보툴팁);
+                    가글메뉴툴팁(가글성장, 가글성장툴팁);
+                    가글메뉴툴팁(가글월드, 가글월드툴팁);
 
-                        // 보여주기
-                        function show() {
-                            툴팁.style.display = "flex";
-
-                            const rect = 버튼.getBoundingClientRect();
-                            const tip = 툴팁.getBoundingClientRect();
-
-                            툴팁.style.left = (rect.right - tip.width) + "px";
-                            툴팁.style.top = (rect.bottom - 0) + "px";
-                        }
-
-                        // 숨기기
-                        function hide() {
-                            툴팁.style.display = "none";
-                        }
-
-                        // 버튼 위로 가면 열림
-                        버튼.addEventListener("mouseenter", () => {
-                            if (window.가글터치모드) return;
-                            show();
-                        });
-
-                        // 버튼에서 나갈 때
-                        버튼.addEventListener("mouseleave", async (e) => {
-                            if (window.가글터치모드) return;
-                            if (!툴팁.contains(e.relatedTarget)) hide();
-                        });
-
-                        // 툴팁에서 나갈 때
-                        툴팁.addEventListener("mouseleave", async (e) => {
-                            if (window.가글터치모드) return;
-                            if (!버튼.contains(e.relatedTarget)) hide();
-                        });
-                    }
-
-                    가글메뉴툴팁설정(가글정보, 가글정보툴팁);
-                    가글메뉴툴팁설정(가글성장, 가글성장툴팁);
-                    가글메뉴툴팁설정(가글월드, 가글월드툴팁);
 
                     window.마신방어1위 = 결과.마신방어1위;
                     window.마신방어2위 = 결과.마신방어2위;
@@ -976,7 +950,30 @@ async function 가글패치노트화면() {
         객체생성(가글패치노트컨테이너, "가글패치노트설명", "가로꽉", "밑줄", `여백`);
 
         //버전표시
-        가글패치노트설명.innerHTML = `v0.3.7`;
+        가글패치노트설명.innerHTML = `v0.3.8`;
+
+        // @ts-nocheck
+
+        /*
+                
+        스탯감소 디버프캐릭
+        연속공격횟수증가 속공캐릭
+        받은데미지 반사 탱커캐릭
+        자신스탯 대가로 데미지 증가캐릭
+        영혼수집가
+        
+        Ctrl + Shift + P
+        Developer: Inspect Editor Tokens and Scopes
+        
+        git add . && git commit -m "배포" && git push origin main
+        
+        nodemon server.js
+        
+        npm run d
+        
+        dev = development(개발)
+        
+        */
 
         //패치노트작성
         객체생성(가글패치노트컨테이너, "가글패치노트들", "", "", `여백`);
@@ -985,6 +982,10 @@ async function 가글패치노트화면() {
         <br>
         25.01.06<br>
         상점 품목이 업데이트되었습니다<br>
+        상점 도박 효과가 1~200➡1~180으로 변경되었습니다<br>
+        상점 투기 효과가 1~1000➡1~900으로 변경되었습니다<br>
+        메뉴들에 단축키를 표시했습니다<br>
+        단축키 표시가 있는것과 없는것 ui의견주시면 참고하겠습니다<br>
 
         <br>
         25.01.05<br>
@@ -4248,19 +4249,19 @@ async function 가글우편함화면() {
 
                         if (서브.스탯.우편함[a].이름 === "햄버거") {
                             if (유저.스탯.현재스태미너 >= 2000 - (서브.스탯.우편함[a].수량 * 300)) {
-                                알림창표시(`아직 배가 고프지 않습니다`);
+                                알림창표시(`아직 배가 부릅니다`);
                                 return;
                             }
                         }
                         if (서브.스탯.우편함[a].이름 === "샐러드") {
                             if (유저.스탯.현재스태미너 >= 2000 - (서브.스탯.우편함[a].수량 * 60)) {
-                                알림창표시(`아직 배가 고프지 않습니다`);
+                                알림창표시(`아직 배가 부릅니다`);
                                 return;
                             }
                         }
                         if (서브.스탯.우편함[a].이름 === "스태미너") {
                             if (유저.스탯.현재스태미너 >= 2000 - (서브.스탯.우편함[a].수량)) {
-                                알림창표시(`아직 배가 고프지 않습니다`);
+                                알림창표시(`아직 배가 부릅니다`);
                                 return;
                             }
                         }
@@ -4587,7 +4588,7 @@ async function 가글상점화면() {
                             return;
                         }
                     } else if (+a === 1) {
-                        if (유저.스탯.현재스태미너 > 1800) {
+                        if (유저.스탯.현재스태미너 > 1820) {
                             알림창표시(`아직 배가 부릅니다`);
                             return;
                         }
@@ -4597,7 +4598,7 @@ async function 가글상점화면() {
                             return;
                         }
                     } else if (+a === 3) {
-                        if (유저.스탯.현재스태미너 > 1000) {
+                        if (유저.스탯.현재스태미너 > 1100) {
                             알림창표시(`아직 배가 부릅니다`);
                             return;
                         }
@@ -5252,8 +5253,8 @@ document.addEventListener("keydown", async function (e) {
             case "q":
                 if (유저.스탯.주인장) {
                     가글계정삭제.onclick(e);
-                    break;
                 }
+                break;
             case "w":
                 가글로그아웃.onclick(e);
                 break;
@@ -5350,12 +5351,21 @@ document.addEventListener("keydown", async function (e) {
             case "x":
                 if (유저.스탯.주인장) {
                     가글주인장.onclick(e);
-                    break;
                 }
+                break;
             case "c":
                 if (가글전직컨테이너.style.display === "none") {
                     가글전직.onclick();
                 }
+                break;
+            case "b":
+                가글성장툴팁.표시();
+                break;
+            case "n":
+                가글월드툴팁.표시();
+                break;
+            case "m":
+                가글정보툴팁.표시();
                 break;
         }
     }

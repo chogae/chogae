@@ -2461,8 +2461,8 @@ app.post("/rkrmf", async (req, res) => {
 
             let 획득스태미너 = 0;
             if (품목 === 1) {
-                획득스태미너 = 랜덤드랍(1, 200);
-                if (획득스태미너 >= 190) {
+                획득스태미너 = 랜덤드랍(1, 180);
+                if (획득스태미너 >= 171) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
@@ -2472,7 +2472,7 @@ app.post("/rkrmf", async (req, res) => {
                     if (error) {
                         console.log("로그기록 INSERT 에러:", error);
                     }
-                } else if (획득스태미너 <= 10) {
+                } else if (획득스태미너 <= 9) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
@@ -2486,8 +2486,8 @@ app.post("/rkrmf", async (req, res) => {
                 data.스탯.총스태미너 += 획득스태미너;
                 data.스탯.현재스태미너 += 획득스태미너;
             } else if (품목 === 3) {
-                획득스태미너 = 랜덤드랍(1, 1000);
-                if (획득스태미너 >= 950) {
+                획득스태미너 = 랜덤드랍(1, 900);
+                if (획득스태미너 >= 855) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
@@ -2497,7 +2497,7 @@ app.post("/rkrmf", async (req, res) => {
                     if (error) {
                         console.log("로그기록 INSERT 에러:", error);
                     }
-                } else if (획득스태미너 <= 50) {
+                } else if (획득스태미너 <= 45) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
