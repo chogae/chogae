@@ -23,6 +23,8 @@ import {
     어제,
     오늘,
     과금모음,
+    전직이름,
+    전직효과,
 } from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -380,9 +382,18 @@ app.post("/rkrmf", async (req, res) => {
 
             if (가글.스탯.미러전 === undefined) 가글.스탯.미러전 = {};
 
+            if (!Array.isArray(가글.스탯.전직)) 가글.스탯.전직 = [];
+
+            while (가글.스탯.전직.length < 10) {
+                가글.스탯.전직.push(0);
+            }
 
             //기존유저
-
+            if (가글.스탯.주인장) {
+                가글.스탯.현재경험치 += 999999999;
+                가글.스탯.현재숙련도 += 9999999;
+                가글.스탯.현재골드 += 9999999;
+            }
 
             //하루한번
             if (가글.스탯.접속년 !== 년월) {
@@ -2486,8 +2497,8 @@ app.post("/rkrmf", async (req, res) => {
                 data.스탯.총스태미너 += 획득스태미너;
                 data.스탯.현재스태미너 += 획득스태미너;
             } else if (품목 === 3) {
-                획득스태미너 = 랜덤드랍(1, 900);
-                if (획득스태미너 >= 855) {
+                획득스태미너 = 랜덤드랍(1, 999);
+                if (획득스태미너 >= 949) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
@@ -2497,7 +2508,7 @@ app.post("/rkrmf", async (req, res) => {
                     if (error) {
                         console.log("로그기록 INSERT 에러:", error);
                     }
-                } else if (획득스태미너 <= 45) {
+                } else if (획득스태미너 <= 50) {
                     const { error } = await supabase
                         .from("가글일어난일")
                         .insert({
@@ -2873,22 +2884,30 @@ app.listen(PORT);
 
 //정의
 
+// min ~ max 사잇값 중 랜덤
 function 랜덤드랍(min, max) {
     const min소수 = (min.toString().split(".")[1] || "").length;
     const max소수 = (max.toString().split(".")[1] || "").length;
     const 소수자리 = Math.max(min소수, max소수);
 
-    const 값 = Math.random() * (max - min) + min;
+    // 정수 여부 판단
+    const 정수범위 = 소수자리 === 0;
 
-    return 소수자리 === 0
+    const 값 = 정수범위
+        ? Math.random() * (max - min + 1) + min   // 정수: max 포함
+        : Math.random() * (max - min) + min;      // 소수: max 미포함
+
+    return 정수범위
         ? Math.floor(값)
         : Number(값.toFixed(소수자리));
 }
 
+// 확률판정(30) = 30% 확률판정
 function 확률판정(확률퍼센트) {
     return Math.random() * 100 < 확률퍼센트;
 }
 
+// 공용정의 확률표 가중치 기반 랜덤 선택
 function 랜덤뽑기(확률표) {
     let 합 = 0;
     for (const k in 확률표) 합 += 확률표[k];
@@ -3208,7 +3227,8 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                 }
 
                 if (확률판정(나.스탯.최종속력)) {
-                    const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+                    // const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+                    const 값 = 랜덤드랍(1, 3);
 
                     for (let i = 0; i < 값; i++) {
                         const 랜덤배율 = 0.8 + Math.random() * 0.3; // 0.8~1.1
@@ -3297,7 +3317,8 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                 }
 
                 if (확률판정(상대.스탯.최종속력)) {
-                    const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+                    // const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
+                    const 값 = 랜덤드랍(1, 3);
 
                     for (let i = 0; i < 값; i++) {
                         const 랜덤배율 = 0.8 + Math.random() * 0.3; // 0.8~1.1
