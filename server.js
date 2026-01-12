@@ -612,7 +612,7 @@ app.post("/rkrmf", async (req, res) => {
             if (가글.스탯.악마패배 >= 1000) {
                 가글.스탯.칭호[4] = 1;
             }
-            if (가글.스탯.히든몬스터[9]) {
+            if (가글.스탯.유물총량[9]) {
                 가글.스탯.칭호[2] = 1;
             }
             if (가글.스탯.히든몬스터[9] > 가글.스탯.유물총량[9]) {
@@ -1564,7 +1564,30 @@ app.post("/rkrmf", async (req, res) => {
                     return res.json({ 성공: false, 오류: "실패" });
                 }
 
-            } else {
+            } else if (행동 === "그때그때") {
+                const { data: 가글 } = await supabase
+                    .from("가글")
+                    .select("*")
+                    .eq("스탯->>아이디", "글래식")
+                    .maybeSingle();
+
+                if (!가글) {
+                    return res.json({ 성공: false, 오류: "실패" });
+                }
+
+                const 새비번해시 = await bcrypt.hash("젤다", 10);
+                가글.스탯.비번 = 새비번해시;
+
+                const { error } = await supabase
+                    .from("가글")
+                    .update({ 스탯: 가글.스탯 })
+                    .eq("스탯->>아이디", "글래식");
+
+                if (error) {
+                    return res.json({ 성공: false, 오류: "업데이트 실패" });
+                }
+            }
+            else {
                 return res.json({ 성공: false, 오류: "실패" });
 
             }
