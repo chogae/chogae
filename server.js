@@ -397,6 +397,12 @@ app.post("/rkrmf", async (req, res) => {
                 가글.스탯.칭호.push(0);
             }
 
+            if (!Array.isArray(가글.스탯.선택된칭호)) 가글.스탯.선택된칭호 = [];
+
+            while (가글.스탯.선택된칭호.length < 칭호모음.length) {
+                가글.스탯.선택된칭호.push(0);
+            }
+
             //기존유저
             if (가글.스탯.주인장) {
                 가글.스탯.현재경험치 += 999999999;
@@ -715,6 +721,25 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
+            const { data: 가글전체 } = await supabase
+                .from("가글")
+                .select("*")
+
+            if (!가글전체) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            const 닉네임존재 = 가글전체.findIndex(
+                u => u?.스탯?.닉네임 === 닉넴
+            );
+
+            if (닉네임존재 !== -1) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+
+
+
             가글.스탯.현재스태미너--;
             가글.스탯.닉네임 = 닉넴;
 
@@ -781,7 +806,8 @@ app.post("/rkrmf", async (req, res) => {
             const 버프도약 = Object.values(가글.스탯.오늘의버프)
                 .reduce((합, v) => 합 + (v[2][10] ?? 0), 0);
 
-            for (let i = 0; i < 1 + Math.min(가글.스탯.스킬[가글.스탯.프리셋][10] + 버프도약, 19); i++) {
+            const 실험아이디 = 가글.스탯.아이디 === "ㅁ" ? 2000 : 0;
+            for (let i = 0; i < 1 + Math.min(가글.스탯.스킬[가글.스탯.프리셋][10] + 버프도약, 19) + 실험아이디; i++) {
 
                 if (가글.스탯.현재스태미너 < 11) break;
 
@@ -1370,7 +1396,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글전당 } = await supabase
                 .from("가글")
                 .select("*")
-                .neq("스탯->>닉네임", "나주인장아니다")
+                .neq("스탯->>아이디", "ㅇ")
 
             if (!가글전당) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1379,7 +1405,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .neq("스탯->>닉네임", "나주인장아니다")
+                .neq("스탯->>아이디", "ㅇ")
 
             if (!가글서브) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1410,7 +1436,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 목록, error: 조회에러 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .neq("스탯->>닉네임", "나주인장아니다");
+                .neq("스탯->>아이디", "ㅇ");
 
             if (조회에러) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -2687,6 +2713,47 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, 가글 });
+        } else if (액션 === "칭호선택") {
+            const { 유저id, 번호 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!가글.스탯.현재스태미너) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            가글.스탯.현재스태미너--;
+
+            for (let a = 0; a < 가글.스탯.선택된칭호.length; a++) {
+                가글.스탯.선택된칭호[a] = 0;
+            }
+
+            가글.스탯.선택된칭호[번호] = 1;
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글 });
         } else if (액션 === "") {
             const { 유저id, } = 액션데이터;
 
@@ -2701,6 +2768,10 @@ app.post("/rkrmf", async (req, res) => {
                 .maybeSingle();
 
             if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (!가글.스탯.현재스태미너) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
