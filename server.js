@@ -889,7 +889,10 @@ app.post("/rkrmf", async (req, res) => {
                     가글.스탯.칭호[9] = 1;
                 }
 
-                가글.스탯.현재스태미너--;
+                if (!가글.스탯.주인장) {
+                    가글.스탯.현재스태미너--;
+
+                }
                 가글.스탯.히든 = 랜덤뽑기(히든뽑기);
 
                 가글.스탯 = 유저스탯계산(가글.스탯);
@@ -1409,7 +1412,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글전당 } = await supabase
                 .from("가글")
                 .select("*")
-                // .neq("스탯->>아이디", "ㅇ")
+            // .neq("스탯->>아이디", "ㅇ")
 
             if (!가글전당) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1418,7 +1421,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
                 .select("*")
-                // .neq("스탯->>아이디", "ㅇ")
+            // .neq("스탯->>아이디", "ㅇ")
 
             if (!가글서브) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1449,7 +1452,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 목록, error: 조회에러 } = await supabase
                 .from("가글서브")
                 .select("*")
-                // .neq("스탯->>아이디", "ㅇ");
+            // .neq("스탯->>아이디", "ㅇ");
 
             if (조회에러) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1581,20 +1584,20 @@ app.post("/rkrmf", async (req, res) => {
                 const { data: 가글 } = await supabase
                     .from("가글")
                     .select("*")
-                    .eq("스탯->>아이디", "글래식")
+                    .eq("스탯->>아이디", "제이다이트")
                     .maybeSingle();
 
                 if (!가글) {
                     return res.json({ 성공: false, 오류: "실패" });
                 }
 
-                const 새비번해시 = await bcrypt.hash("젤다", 10);
+                const 새비번해시 = await bcrypt.hash("ㅈㄷ", 10);
                 가글.스탯.비번 = 새비번해시;
 
                 const { error } = await supabase
                     .from("가글")
                     .update({ 스탯: 가글.스탯 })
-                    .eq("스탯->>아이디", "글래식");
+                    .eq("스탯->>아이디", "제이다이트");
 
                 if (error) {
                     return res.json({ 성공: false, 오류: "업데이트 실패" });
@@ -3400,11 +3403,10 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                 }
 
                 if (확률판정(나.스탯.최종속력)) {
-                    // const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
-                    const 값 = 숫자뽑기(1, 2 + Math.max(0, 전직계수(나.스탯.전직[1]) - 전직계수(상대.스탯.전직[5])));
+                    const 값 = Math.max(0, 숫자뽑기(1, 3 + 전직계수(나.스탯.전직[1])) - 전직계수(상대.스탯.전직[5]));
 
                     for (let i = 0; i < 값; i++) {
-                        const 연타배율 = 0.4 + Math.random() * 0.3;
+                        const 연타배율 = 0.2 + Math.random() * 0.3;
 
                         let 연타뎀 = Math.floor(나기본데미지 * 연타배율);
                         상대남은체력 -= 연타뎀;
@@ -3490,11 +3492,10 @@ function 전투시뮬레이션(나, 상대, 악마성 = 1) {
                 }
 
                 if (확률판정(상대.스탯.최종속력)) {
-                    // const 값 = [1, 2, 3, 4][Math.floor(Math.random() * 4)];
-                    const 값 = 숫자뽑기(1, 2 + Math.max(0, 전직계수(상대.스탯.전직[1]) - 전직계수(나.스탯.전직[5])));
+                    const 값 = Math.max(0, 숫자뽑기(1, 3 + 전직계수(상대.스탯.전직[1])) - 전직계수(나.스탯.전직[5]));
 
                     for (let i = 0; i < 값; i++) {
-                        const 연타배율 = 0.4 + Math.random() * 0.3;
+                        const 연타배율 = 0.2 + Math.random() * 0.3;
 
                         let 연타뎀 = Math.floor(상대기본데미지 * 연타배율);
                         나남은체력 -= 연타뎀;
