@@ -88,10 +88,10 @@ app.post("/rkrmf", async (req, res) => {
 
             const 닉네임 =
                 (아이디 === "ㅇ")
-                    ? "나주인장아니다"
+                    ? "gagl"
                     : 아이디;
 
-            const 주인장 = 닉네임 === "나주인장아니다" ? 1 : 0;
+            const 주인장 = 닉네임 === "gagl" ? 1 : 0;
             // 신규 유저 생성 (UUID는 자동 생성됨)
             const { data: 생성된가글, error: 생성에러 } = await supabase
                 .from("가글")
@@ -806,7 +806,7 @@ app.post("/rkrmf", async (req, res) => {
             const 버프도약 = Object.values(가글.스탯.오늘의버프)
                 .reduce((합, v) => 합 + (v[2][10] ?? 0), 0);
 
-            const 실험아이디 = 가글.스탯.아이디 === "ㅁ" ? 2000 : 0;
+            const 실험아이디 = 가글.스탯.아이디 === "ㅇ" ? 2000 : 0;
             for (let i = 0; i < 1 + Math.min(가글.스탯.스킬[가글.스탯.프리셋][10] + 버프도약, 19) + 실험아이디; i++) {
 
                 if (가글.스탯.현재스태미너 < 11) break;
@@ -1409,7 +1409,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글전당 } = await supabase
                 .from("가글")
                 .select("*")
-                .neq("스탯->>아이디", "ㅇ")
+                // .neq("스탯->>아이디", "ㅇ")
 
             if (!가글전당) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1418,7 +1418,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 가글서브 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .neq("스탯->>아이디", "ㅇ")
+                // .neq("스탯->>아이디", "ㅇ")
 
             if (!가글서브) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1449,7 +1449,7 @@ app.post("/rkrmf", async (req, res) => {
             const { data: 목록, error: 조회에러 } = await supabase
                 .from("가글서브")
                 .select("*")
-                .neq("스탯->>아이디", "ㅇ");
+                // .neq("스탯->>아이디", "ㅇ");
 
             if (조회에러) {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -1566,7 +1566,7 @@ app.post("/rkrmf", async (req, res) => {
                 }
 
             } else if (행동 === "골드백만") {
-                가글.스탯.현재골드 = 1000000;
+                가글.스탯.현재골드 = 9999999999999;
 
                 const { error } = await supabase
                     .from("가글")
