@@ -2602,15 +2602,19 @@ app.post("/rkrmf", async (req, res) => {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            const { data: 서브 } = await supabase
-                .from("가글서브")
+            const { data: 전체유저 } = await supabase
+                .from("가글")
                 .select("*")
 
-            if (!서브) {
+            if (!전체유저) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
 
-            res.json({ 성공: true, 서브전체: 서브, });
+            const 필터유저 = 전체유저.filter(
+                v => (분 - (v.스탯?.접속분 ?? 0)) < 60
+            );
+
+            res.json({ 성공: true, 서브전체: 필터유저, });
         } else if (액션 === "프리셋변경") {
             const { 유저id, 프리셋 } = 액션데이터;
 
