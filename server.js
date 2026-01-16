@@ -26,6 +26,7 @@ import {
     전직이름,
     전직효과,
     칭호모음,
+    아이템모음,
 } from "./공용정의.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -402,6 +403,9 @@ app.post("/rkrmf", async (req, res) => {
             while (가글.스탯.선택된칭호.length < 칭호모음.length) {
                 가글.스탯.선택된칭호.push(0);
             }
+
+            if (가글.스탯.샐러드 === undefined) 가글.스탯.샐러드 = 0;
+            if (가글.스탯.햄버거 === undefined) 가글.스탯.햄버거 = 0;
 
             //기존유저
             // if (가글.스탯.주인장) {
@@ -1581,27 +1585,7 @@ app.post("/rkrmf", async (req, res) => {
                 }
 
             } else if (행동 === "그때그때") {
-                const { data: 가글 } = await supabase
-                    .from("가글")
-                    .select("*")
-                    .eq("스탯->>아이디", "제이다이트")
-                    .maybeSingle();
-
-                if (!가글) {
-                    return res.json({ 성공: false, 오류: "실패" });
-                }
-
-                const 새비번해시 = await bcrypt.hash("ㅈㄷ", 10);
-                가글.스탯.비번 = 새비번해시;
-
-                const { error } = await supabase
-                    .from("가글")
-                    .update({ 스탯: 가글.스탯 })
-                    .eq("스탯->>아이디", "제이다이트");
-
-                if (error) {
-                    return res.json({ 성공: false, 오류: "업데이트 실패" });
-                }
+                가글.스탯.샐러드 = 0;
             }
             else {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -2308,11 +2292,9 @@ app.post("/rkrmf", async (req, res) => {
                 서브 = data;
 
                 if (서브.스탯.우편함[우편번호].이름 === "햄버거") {
-                    가글.스탯.총스태미너 += +서브.스탯.우편함[우편번호].수량 * 300;
-                    가글.스탯.현재스태미너 += +서브.스탯.우편함[우편번호].수량 * 300;
+                    가글.스탯.햄버거 += +서브.스탯.우편함[우편번호].수량;
                 } else if (서브.스탯.우편함[우편번호].이름 === "샐러드") {
-                    가글.스탯.총스태미너 += +서브.스탯.우편함[우편번호].수량 * 60;
-                    가글.스탯.현재스태미너 += +서브.스탯.우편함[우편번호].수량 * 60;
+                    가글.스탯.샐러드 += +서브.스탯.우편함[우편번호].수량;
                 } else if (서브.스탯.우편함[우편번호].이름 === "골드") {
                     가글.스탯.총골드 += +서브.스탯.우편함[우편번호].수량;
                     가글.스탯.현재골드 += +서브.스탯.우편함[우편번호].수량;
@@ -2349,6 +2331,64 @@ app.post("/rkrmf", async (req, res) => {
             if (error) {
                 return res.json({ 성공: false, 오류: "실패" });
             }
+
+            res.json({ 성공: true, 가글, 서브 });
+        } else if (액션 === "우편모두받기") {
+            const { 유저id } = 액션데이터;
+            if (!유저id) return res.json({ 성공: false, 오류: "유저 id 부족" });
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            const { data: 서브 } = await supabase
+                .from("가글서브")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글 || !서브) return res.json({ 성공: false, 오류: "실패" });
+
+            for (const a in 서브.스탯.우편함) {
+                const 우편 = 서브.스탯.우편함[a];
+
+                if (우편.이름 === "햄버거") {
+                    가글.스탯.햄버거 += +우편.수량;
+                } else if (우편.이름 === "샐러드") {
+                    가글.스탯.샐러드 += +우편.수량;
+                } else if (우편.이름 === "골드") {
+                    가글.스탯.총골드 += +우편.수량;
+                    가글.스탯.현재골드 += +우편.수량;
+                } else if (우편.이름 === "신화유물") {
+                    가글.스탯.유물[3][랜덤뽑기(유물확률표)]++;
+                    가글.스탯.유물총량[3]++;
+                } else if (우편.이름 === "고대유물") {
+                    가글.스탯.유물[4][랜덤뽑기(유물확률표)]++;
+                    가글.스탯.유물총량[4]++;
+                } else if (우편.이름 === "태초유물") {
+                    가글.스탯.유물[5][랜덤뽑기(유물확률표)]++;
+                    가글.스탯.유물총량[5]++;
+                } else if (우편.이름 === "타락유물") {
+                    가글.스탯.유물[6][랜덤뽑기(유물확률표)]++;
+                    가글.스탯.유물총량[6]++;
+                }
+            }
+
+            서브.스탯.우편함 = {};
+
+            await supabase
+                .from("가글서브")
+                .update({ 스탯: 서브.스탯 })
+                .eq("id", 유저id);
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
 
             res.json({ 성공: true, 가글, 서브 });
         } else if (액션 === "버프리롤") {
@@ -2521,15 +2561,9 @@ app.post("/rkrmf", async (req, res) => {
                 data.스탯.총스태미너 += 획득스태미너;
                 data.스탯.현재스태미너 += 획득스태미너;
             } else if (품목 === 2) {
-                획득스태미너 = 300;
-                data.스탯.총스태미너 += 300;
-                data.스탯.현재스태미너 += 300;
-
+                data.스탯.햄버거++;
             } else if (품목 === 0) {
-                획득스태미너 = 60;
-                data.스탯.총스태미너 += 60;
-                data.스탯.현재스태미너 += 60;
-
+                data.스탯.샐러드++;
             } else {
                 return res.json({ 성공: false, 오류: "실패" });
 
@@ -2780,6 +2814,57 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             가글.스탯.선택된칭호[번호] = 1;
+
+            가글.스탯 = 유저스탯계산(가글.스탯);
+
+            const { error } = await supabase
+                .from("가글")
+                .update({ 스탯: 가글.스탯 })
+                .eq("id", 유저id);
+
+            if (error) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, 가글 });
+        } else if (액션 === "아이템먹기") {
+            const { 유저id, 아이템이름 } = 액션데이터;
+
+            if (!유저id) {
+                return res.json({ 성공: false, 오류: "유저 id 부족" });
+            }
+
+            const { data: 가글 } = await supabase
+                .from("가글")
+                .select("*")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (!가글) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            if (아이템이름 === "샐러드") {
+                if (!가글.스탯.샐러드 || 가글.스탯.현재스태미너 > 1940) {
+                    return res.json({ 성공: false, 오류: "실패" });
+
+                } else {
+                    가글.스탯.총스태미너 += 60;
+                    가글.스탯.현재스태미너 += 60;
+                    가글.스탯.샐러드--;
+                }
+            } else if (아이템이름 === "햄버거") {
+                if (!가글.스탯.햄버거 || 가글.스탯.현재스태미너 > 1700) {
+                    return res.json({ 성공: false, 오류: "실패" });
+
+                } else {
+                    가글.스탯.총스태미너 += 300;
+                    가글.스탯.현재스태미너 += 300;
+                    가글.스탯.햄버거--;
+                }
+            }
+
+
 
             가글.스탯 = 유저스탯계산(가글.스탯);
 

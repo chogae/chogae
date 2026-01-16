@@ -65,6 +65,11 @@ export const 상점모음 = {
 
 };
 
+export const 아이템모음 = [
+    "샐러드",
+    "햄버거",
+];
+
 export const 과금모음 = {
     0: { // 과금 상품 시작
         이름: "샐러드",
