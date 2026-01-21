@@ -3187,6 +3187,23 @@ async function 가글전당화면() {
                     .sort((a, b) => b.스탯.전투력 - a.스탯.전투력);
                 결과.가글서브.sort((a, b) => b.스탯.마신.방어 - a.스탯.마신.방어);
 
+                if (유저.스탯.주인장) {
+                    const 년월 = new Date().toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }); //"2025. 8. 26."
+                    const 요일 = new Date().toLocaleDateString("ko-KR", { weekday: "long", timeZone: "Asia/Seoul" }); //"화요일"
+                    const 시각 = new Date().toLocaleTimeString("ko-KR", { timeZone: "Asia/Seoul" }); //"오후 4:37:00"
+                    const 시 = Math.floor(new Date().getTime() / 3600000); // 478520,
+                    const 분 = Math.floor(new Date().getTime() / 60000); // 478520,
+                    const 초 = Math.floor(new Date().getTime() / 1000); // 478520,
+
+                    결과.가글전당 = 결과.가글전당
+                        .filter(v =>
+                            v.스탯?.전투력 &&
+                            (시 - (v.스탯?.접속시 ?? 0)) < 48
+                        )
+                        .sort((a, b) => b.스탯.전투력 - a.스탯.전투력);
+
+                }
+
                 const 서브맵 = {};
                 for (const s of 결과.가글서브) {
                     서브맵[s.스탯.닉네임] = s.스탯;
