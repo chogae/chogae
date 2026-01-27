@@ -491,6 +491,30 @@ app.post("/rkrmf", async (req, res) => {
 
                 }
 
+                if (요일 === "일요일") {
+                    const 최대키 = Math.max(0, ...Object.keys(가글서브.스탯.우편함).map(Number));
+
+                    가글서브.스탯.우편함[최대키 + 1] = {
+                        이름: "햄버거",
+                        수량: 1,
+                        년월,
+                        요일,
+                        시각,
+                        메모: `일요일은 거꾸로 해도 일요일`
+                    };
+
+                    const { error } = await supabase
+                        .from("가글로그")
+                        .insert({
+                            스탯: `${가글.스탯.아이디}(${가글.스탯.닉네임}) 일요일 보상`
+                        });
+
+                    if (error) {
+                        return res.json({ 성공: false, 오류: "실패" });
+                    }
+
+                }
+
                 for (const a in 가글.스탯.미러전) {
                     if (a !== 어제() && a !== 오늘()) {
                         delete 가글.스탯.미러전[a];
