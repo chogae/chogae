@@ -1613,7 +1613,9 @@ app.post("/rkrmf", async (req, res) => {
                 }
 
             } else if (행동 === "그때그때") {
-                가글.스탯.샐러드 = 0;
+                for (let a = 1; a <= 9; a++) {
+                    가글.스탯.영혼[a] = 999;
+                }
             }
             else {
                 return res.json({ 성공: false, 오류: "실패" });
@@ -2150,6 +2152,56 @@ app.post("/rkrmf", async (req, res) => {
             }
 
             res.json({ 성공: true, data });
+        } // 광장 조회
+        else if (액션 === "광장조회") {
+
+            const { data, error } = await supabase
+                .from("가글광장")
+                .select("*")
+                .order("id", { ascending: false })
+                .limit(100);
+
+            if (error || !data) {
+                return res.json({ 성공: false, 오류: "실패" });
+            }
+
+            res.json({ 성공: true, data });
+        }
+
+
+        // 광장 삭제
+        else if (액션 === "광장삭제") {
+
+            const { 유저id, 광장id } = 액션데이터;
+
+            if (!유저id || !광장id) {
+                return res.json({ 성공: false, 오류: "값 부족" });
+            }
+
+            const { data: 유저, error: 유저에러 } = await supabase
+                .from("가글")
+                .select("스탯")
+                .eq("id", 유저id)
+                .maybeSingle();
+
+            if (유저에러 || !유저) {
+                return res.json({ 성공: false, 오류: "유저 오류" });
+            }
+
+            if (!유저.스탯?.주인장) {
+                return res.json({ 성공: false, 오류: "권한 없음" });
+            }
+
+            const { error: 삭제에러 } = await supabase
+                .from("가글광장")
+                .delete()
+                .eq("id", 광장id);
+
+            if (삭제에러) {
+                return res.json({ 성공: false, 오류: "삭제 실패" });
+            }
+
+            res.json({ 성공: true });
         } else if (액션 === "우편한명보내기") {
             const { 유저id, 새이름, 새수량, 새메모, 닉네임 } = 액션데이터;
 
